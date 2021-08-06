@@ -8,30 +8,39 @@ const gameFieldMethods = {
     app.appendChild(this.canvas);
     this.ctx.fillStyle = 'green';
 
+    console.log(this.matrix);
+
     this.addListenersForMouseEvent();
   },
 
   addListenersForMouseEvent: function () {
-    this.canvas.addEventListener('mousemove', this.handleMouseMove);
-    this.canvas.addEventListener('mousedown', this.handleMouseDown);
-    this.canvas.addEventListener('mouseup', this.handleMouseUp);
+    this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
+    this.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this));
+    this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
   },
 
   handleMouseUp: function (event) {
     console.log(event);
+
+    this.mouseIsPressed = false;
   },
 
   handleMouseDown: function (event) {
-    console.log(event);
+    this.matrix[event.offsetY][event.offsetX] = 1;
+    this.mouseIsPressed = true;
   },
 
-  handleMouseMove: function (event) {},
+  handleMouseMove: function (event) {
+    if (this.mouseIsPressed) {
+      this.matrix[event.offsetY][event.offsetX] = 1;
+    }
+  },
 
   draw: function () {
     this.matrix.forEach((row, y) => {
       row.forEach((col, x) => {
         if (col === 0) {
-          this.ctx.fillRect(10 * x, 10 * y, 10 * (x + 1), 10 * (y + 1));
+          this.ctx.fillRect(x, y, x + 1, y + 1);
         }
       });
     });
@@ -39,8 +48,8 @@ const gameFieldMethods = {
 };
 
 const gameField = {
-  matrix: Array.from({ length: 100 }, () =>
-    Array.from({ length: 100 }, () => 0)
+  matrix: Array.from({ length: window.innerHeight }, () =>
+    Array.from({ length: window.innerWidth }, () => 0)
   ),
   canvas: null,
   ctx: null,
