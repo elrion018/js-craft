@@ -1,5 +1,5 @@
-export const gameFieldMethods = {
-  init: function (app) {
+export const field = {
+  init: function (app, gameSystem) {
     this.setCanvasAndContext(app);
     this.setCanvasMatrix();
     this.addListenersForMouseEvent();
@@ -89,17 +89,3 @@ export const gameFieldMethods = {
     this.ctx.stroke();
   },
 };
-
-export const gameField = {
-  app: null,
-  canvas: null,
-  ctx: null,
-  matrix: null,
-  mouseIsPressed: false,
-  startX: null,
-  startY: null,
-  endY: null,
-  endX: null,
-};
-
-Object.setPrototypeOf(gameField, gameFieldMethods);
