@@ -1,0 +1,21 @@
+{
+  "name": "js-star-craft",
+  "version": "1.0.0",
+  "description": "자바스크립트로 웹기반 스타크래프트 게임 구현하기 프로젝트",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elrion018/js-craft.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elrion018/js-craft/issues"
+  },
+  "homepage": "https://github.com/elrion018/js-craft#readme",
+  "type": "module"
+}
