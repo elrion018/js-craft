@@ -1,30 +1,38 @@
 const gameFieldMethods = {
   init: function () {
+    this.setCanvasAndContext();
+    this.setCanvasMatrix();
+    this.addListenersForMouseEvent();
+    requestAnimationFrame(this.updateCanvas.bind(this));
+  },
+
+  setCanvasAndContext: function () {
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
+
     this.canvas.className += 'field-canvas';
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
-    const app = document.getElementById('app');
-    this.ctx.fillStyle = 'white';
-    app.appendChild(this.canvas);
 
+    const app = document.getElementById('app');
+
+    app.appendChild(this.canvas);
+  },
+
+  setCanvasMatrix: function () {
     this.matrix = Array.from({ length: this.canvas.height }, () =>
       Array.from({ length: this.canvas.width }, () => 0)
     );
-
-    this.addListenersForMouseEvent();
-    requestAnimationFrame(this.updateField.bind(this));
   },
 
-  updateField: function () {
+  updateCanvas: function () {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.mouseIsPressed && this.endX && this.endY) {
       this.drawDragRect();
     }
 
-    requestAnimationFrame(this.updateField.bind(this));
+    requestAnimationFrame(this.updateCanvas.bind(this));
   },
 
   addListenersForMouseEvent: function () {
