@@ -4,14 +4,16 @@ const gameFieldMethods = {
     this.ctx = this.canvas.getContext('2d');
     this.canvas.className += 'field-canvas';
     const app = document.getElementById('app');
+    this.ctx.fillStyle = 'white';
 
     app.appendChild(this.canvas);
-    this.ctx.fillStyle = 'green';
 
     console.log(this.matrix);
 
     this.addListenersForMouseEvent();
   },
+
+  updateField: function () {},
 
   addListenersForMouseEvent: function () {
     this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
@@ -26,17 +28,24 @@ const gameFieldMethods = {
   },
 
   handleMouseDown: function (event) {
-    this.matrix[event.offsetY][event.offsetX] = 1;
+    const { offsetX, offsetY } = event;
+    this.matrix[offsetY][offsetX] = 1;
+    this.startX = offsetX;
+    this.startY = offsetY;
+
     this.mouseIsPressed = true;
   },
 
   handleMouseMove: function (event) {
     if (this.mouseIsPressed) {
-      this.matrix[event.offsetY][event.offsetX] = 1;
+      const { offsetX, offsetY } = event;
+      this.matrix[offsetY][offsetX] = 1;
+
+      this.drawDragRect(this.startX, this.startY, offsetX, offsetY);
     }
   },
 
-  draw: function () {
+  drawBackground: function () {
     this.matrix.forEach((row, y) => {
       row.forEach((col, x) => {
         if (col === 0) {
@@ -44,6 +53,15 @@ const gameFieldMethods = {
         }
       });
     });
+  },
+
+  drawDragRect: function (startX, startY, endX, endY) {
+    this.ctx.strokeStyle = 'green'; // 선 색깔은 그린
+    this.ctx.lineWidth = 2;
+
+    this.ctx.beginPath();
+    this.ctx.rect(startX, startY, endX - startX, endY - startY);
+    this.ctx.stroke();
   },
 };
 
@@ -54,9 +72,11 @@ const gameField = {
   canvas: null,
   ctx: null,
   mouseIsPressed: false,
+  startX: null,
+  startY: null,
 };
 
 Object.setPrototypeOf(gameField, gameFieldMethods);
 
 gameField.init();
-gameField.draw();
+gameField.drawBackground();
