@@ -3,17 +3,29 @@ const gameFieldMethods = {
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
     this.canvas.className += 'field-canvas';
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
     const app = document.getElementById('app');
     this.ctx.fillStyle = 'white';
-
     app.appendChild(this.canvas);
 
-    console.log(this.matrix);
+    this.matrix = Array.from({ length: this.canvas.height }, () =>
+      Array.from({ length: this.canvas.width }, () => 0)
+    );
 
     this.addListenersForMouseEvent();
+    requestAnimationFrame(this.updateField.bind(this));
   },
 
-  updateField: function () {},
+  updateField: function () {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    if (this.mouseIsPressed && this.endX && this.endY) {
+      this.drawDragRect();
+    }
+
+    requestAnimationFrame(this.updateField.bind(this));
+  },
 
   addListenersForMouseEvent: function () {
     this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
@@ -22,9 +34,9 @@ const gameFieldMethods = {
   },
 
   handleMouseUp: function (event) {
-    console.log(event);
-
     this.mouseIsPressed = false;
+    this.endX = null;
+    this.endY = null;
   },
 
   handleMouseDown: function (event) {
@@ -40,8 +52,10 @@ const gameFieldMethods = {
     if (this.mouseIsPressed) {
       const { offsetX, offsetY } = event;
       this.matrix[offsetY][offsetX] = 1;
+      this.endX = offsetX;
+      this.endY = offsetY;
 
-      this.drawDragRect(this.startX, this.startY, offsetX, offsetY);
+      this.drawDragRect();
     }
   },
 
@@ -55,28 +69,32 @@ const gameFieldMethods = {
     });
   },
 
-  drawDragRect: function (startX, startY, endX, endY) {
+  drawDragRect: function () {
     this.ctx.strokeStyle = 'green'; // 선 색깔은 그린
-    this.ctx.lineWidth = 2;
+    this.ctx.lineWidth = 1;
 
     this.ctx.beginPath();
-    this.ctx.rect(startX, startY, endX - startX, endY - startY);
+    this.ctx.rect(
+      this.startX,
+      this.startY,
+      this.endX - this.startX,
+      this.endY - this.startY
+    );
     this.ctx.stroke();
   },
 };
 
 const gameField = {
-  matrix: Array.from({ length: window.innerHeight }, () =>
-    Array.from({ length: window.innerWidth }, () => 0)
-  ),
   canvas: null,
   ctx: null,
+  matrix: null,
   mouseIsPressed: false,
   startX: null,
   startY: null,
+  endY: null,
+  endX: null,
 };
 
 Object.setPrototypeOf(gameField, gameFieldMethods);
 
 gameField.init();
-gameField.drawBackground();
