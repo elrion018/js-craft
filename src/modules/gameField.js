@@ -1,20 +1,18 @@
 export const gameFieldMethods = {
-  init: function () {
-    this.setCanvasAndContext();
+  init: function (app) {
+    this.setCanvasAndContext(app);
     this.setCanvasMatrix();
     this.addListenersForMouseEvent();
     requestAnimationFrame(this.updateCanvas.bind(this));
   },
 
-  setCanvasAndContext: function () {
+  setCanvasAndContext: function (app) {
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
 
     this.canvas.className += 'field-canvas';
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
-
-    const app = document.getElementById('app');
 
     app.appendChild(this.canvas);
   },
@@ -93,6 +91,7 @@ export const gameFieldMethods = {
 };
 
 export const gameField = {
+  app: null,
   canvas: null,
   ctx: null,
   matrix: null,
