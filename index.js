@@ -1,11 +1,15 @@
 import { system } from './src/modules/system.js';
 import { field } from './src/modules/field.js';
+import { timer } from './src/modules/timer.js';
 
 const app = document.querySelector('#app');
 const gameSystem = Object.create(system);
+const gameTimer = Object.create(timer);
 const gameField = Object.create(field);
 
-gameSystem.init();
+gameTimer.init();
+gameTimer.start();
+gameSystem.init(gameTimer);
 gameField.init(app, gameSystem);
 
 gameSystem.createUnit(200, 200);

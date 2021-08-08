@@ -72,6 +72,9 @@ export const field = {
 
       this.mouseIsPressed = true;
     }
+
+    if (event.which === 3) {
+    }
   },
 
   handleMouseMove: function (event) {

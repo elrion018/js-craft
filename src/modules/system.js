@@ -1,9 +1,10 @@
 import { unit } from './unit.js';
 
 export const system = {
-  init: function () {
+  init: function (timer) {
     this.units = [];
     this.matrix = [];
+    this.timer = timer;
   },
 
   createUnit: function (positionX, positionY) {
