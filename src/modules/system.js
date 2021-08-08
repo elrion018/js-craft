@@ -15,6 +15,12 @@ export const system = {
     this.units.push(createdUnit);
   },
 
+  updateUnits: function () {
+    this.units.forEach(unit => {
+      unit.updateStatus();
+    });
+  },
+
   getUnits: function () {
     return this.units;
   },
@@ -67,7 +73,7 @@ export const system = {
     const selectedUnits = this.getSelectedUnits();
 
     selectedUnits.forEach(unit => {
-      unit.move(targetX, targetY);
+      unit.setTargetForMove(targetX, targetY);
     });
   },
 
