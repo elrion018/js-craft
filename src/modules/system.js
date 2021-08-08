@@ -19,6 +19,12 @@ export const system = {
     return this.units;
   },
 
+  getSelectedUnits: function () {
+    return this.units.filter(unit => {
+      return unit.isSelected;
+    });
+  },
+
   selectUnitsWithDrag: function (startX, startY, endX, endY) {
     const leftX = Math.min(startX, endX);
     const rightX = Math.max(startX, endX);

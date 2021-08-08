@@ -74,6 +74,7 @@ export const field = {
     }
 
     if (event.which === 3) {
+      console.log(this.gameSystem.getSelectedUnits());
     }
   },
 
