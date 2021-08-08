@@ -5,5 +5,9 @@ const app = document.querySelector('#app');
 const gameSystem = Object.create(system);
 const gameField = Object.create(field);
 
-gameField.init(app);
-gameSystem.init(gameField);
+gameSystem.init();
+gameField.init(app, gameSystem);
+
+gameSystem.createUnit(200, 200);
+
+console.log(gameSystem);

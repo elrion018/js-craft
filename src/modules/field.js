@@ -1,5 +1,6 @@
 export const field = {
-  init: function (app) {
+  init: function (app, gameSystem) {
+    this.gameSystem = gameSystem;
     this.setCanvasAndContext(app);
     this.setCanvasMatrix();
     this.addListenersForMouseEvent();
@@ -28,6 +29,15 @@ export const field = {
 
     if (this.mouseIsPressed && this.endX && this.endY) {
       this.drawDragRect();
+    }
+
+    if (this.gameSystem.units.length) {
+      this.gameSystem.units.forEach(unit => {
+        const { positionX, positionY, radius } = unit;
+        this.ctx.beginPath();
+        this.ctx.arc(positionX, positionY, radius, 0, 2 * Math.PI);
+        this.ctx.stroke();
+      }, this);
     }
 
     requestAnimationFrame(this.updateCanvas.bind(this));
