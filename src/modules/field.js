@@ -45,6 +45,12 @@ export const field = {
   handleMouseUp: function (event) {
     this.mouseIsPressed = false;
 
+    if (event.which === 1) {
+      this.mouseUpWithLeftClick();
+    }
+  },
+
+  mouseUpWithLeftClick() {
     if (this.isDraged) {
       this.gameSystem.selectUnitsWithDrag(
         this.startX,
