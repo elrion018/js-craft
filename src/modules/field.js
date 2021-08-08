@@ -1,6 +1,8 @@
 export const field = {
   init: function (app, gameSystem) {
     this.gameSystem = gameSystem;
+    this.endX = null;
+    this.endY = null;
 
     this.setCanvasAndContext(app);
     this.gameSystem.setMatrix(this.canvas.height, this.canvas.width);
@@ -37,18 +39,23 @@ export const field = {
   },
 
   handleMouseUp: function (event) {
-    if (this.mouseIsPressed) {
-      this.mouseIsPressed = false;
-      this.gameSystem.selectUnits(
+    this.mouseIsPressed = false;
+    console.log(this.startX, this.startY, this.endX, this.endY);
+    if (this.isDraged) {
+      this.gameSystem.selectUnitsWithDrag(
         this.startX,
         this.startY,
         this.endX,
         this.endY
       );
-
-      this.endX = null;
-      this.endY = null;
+      this.isDraged = false;
     }
+
+    if (!this.isDraged && !this.endX && !this.endY) {
+    }
+
+    this.endX = null;
+    this.endY = null;
   },
 
   handleMouseDown: function (event) {
@@ -64,6 +71,7 @@ export const field = {
       const { offsetX, offsetY } = event;
       this.endX = offsetX;
       this.endY = offsetY;
+      this.isDraged = true;
 
       this.drawDragRect();
     }
