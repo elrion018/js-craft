@@ -36,6 +36,10 @@ export const field = {
     this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
     this.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this));
     this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
+    this.canvas.addEventListener(
+      'contextmenu',
+      this.handleContextMenu.bind(this)
+    );
   },
 
   handleMouseUp: function (event) {
@@ -61,11 +65,13 @@ export const field = {
   },
 
   handleMouseDown: function (event) {
-    const { offsetX, offsetY } = event;
-    this.startX = offsetX;
-    this.startY = offsetY;
+    if (event.which === 1) {
+      const { offsetX, offsetY } = event;
+      this.startX = offsetX;
+      this.startY = offsetY;
 
-    this.mouseIsPressed = true;
+      this.mouseIsPressed = true;
+    }
   },
 
   handleMouseMove: function (event) {
@@ -77,6 +83,10 @@ export const field = {
 
       this.drawDragRect();
     }
+  },
+
+  handleContextMenu: function (event) {
+    event.preventDefault();
   },
 
   drawBackground: function () {
