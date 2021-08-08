@@ -3,6 +3,7 @@ export const timer = {
     this.now = 0;
     this.captureNow = 0;
   },
+
   start: function () {
     this.interval = setInterval(() => {
       this.now += 1;

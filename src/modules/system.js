@@ -63,6 +63,15 @@ export const system = {
     });
   },
 
+  commandUnitsToMove(targetX, targetY) {
+    const selectedUnits = this.getSelectedUnits();
+
+    selectedUnits.forEach(unit => {
+      console.log(unit, targetX, targetY);
+      unit.move(targetX, targetY);
+    });
+  },
+
   setMatrix: function (height, width) {
     this.matrix = Array.from({ length: height }, () =>
       Array.from({ length: width }, () => 0)

@@ -16,4 +16,13 @@ export const unit = {
   setIsSelected: function (isSelected) {
     this.isSelected = isSelected;
   },
+
+  move: function (targetX, targetY) {
+    const angle = this.getAngleBetweenTarget(targetX, targetY);
+    console.log(angle);
+  },
+
+  getAngleBetweenTarget: function (targetX, targetY) {
+    return Math.atan2(targetY - this.positionY, targetX - this.positionX);
+  },
 };

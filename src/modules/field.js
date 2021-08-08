@@ -80,7 +80,9 @@ export const field = {
     }
 
     if (event.which === 3) {
-      console.log(this.gameSystem.getSelectedUnits());
+      const { offsetX: targetX, offsetY: targetY } = event;
+
+      this.gameSystem.commandUnitsToMove(targetX, targetY);
     }
   },
 
@@ -131,6 +133,7 @@ export const field = {
       this.ctx.arc(positionX, positionY, radius, 0, 2 * Math.PI);
 
       if (unit.isSelected) this.ctx.fill();
+
       this.ctx.stroke();
     }, this);
   },
