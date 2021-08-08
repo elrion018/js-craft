@@ -40,7 +40,7 @@ export const field = {
 
   handleMouseUp: function (event) {
     this.mouseIsPressed = false;
-    console.log(this.startX, this.startY, this.endX, this.endY);
+
     if (this.isDraged) {
       this.gameSystem.selectUnitsWithDrag(
         this.startX,
@@ -48,10 +48,12 @@ export const field = {
         this.endX,
         this.endY
       );
+
       this.isDraged = false;
     }
 
     if (!this.isDraged && !this.endX && !this.endY) {
+      this.gameSystem.selectUnitWithOneTouch(this.startX, this.startY);
     }
 
     this.endX = null;

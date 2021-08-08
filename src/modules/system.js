@@ -42,6 +42,20 @@ export const system = {
     });
   },
 
+  selectUnitWithOneTouch(startX, startY) {
+    this.units.forEach(unit => {
+      const { positionX, positionY } = unit.getPositions();
+
+      if (positionX === startX && positionY === startY) {
+        unit.setIsSelected(true);
+
+        return;
+      }
+
+      unit.setIsSelected(false);
+    });
+  },
+
   setMatrix: function (height, width) {
     this.matrix = Array.from({ length: height }, () =>
       Array.from({ length: width }, () => 0)
