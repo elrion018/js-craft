@@ -1,9 +1,11 @@
 export const field = {
   init: function (app, gameSystem) {
     this.gameSystem = gameSystem;
+
     this.setCanvasAndContext(app);
     this.gameSystem.setMatrix(this.canvas.height, this.canvas.width);
     this.addListenersForMouseEvent();
+
     requestAnimationFrame(this.updateCanvas.bind(this));
   },
 
@@ -35,9 +37,18 @@ export const field = {
   },
 
   handleMouseUp: function (event) {
-    this.mouseIsPressed = false;
-    this.endX = null;
-    this.endY = null;
+    if (this.mouseIsPressed) {
+      this.mouseIsPressed = false;
+      this.gameSystem.selectUnits(
+        this.startX,
+        this.startY,
+        this.endX,
+        this.endY
+      );
+
+      this.endX = null;
+      this.endY = null;
+    }
   },
 
   handleMouseDown: function (event) {
@@ -59,7 +70,7 @@ export const field = {
   },
 
   drawBackground: function () {
-    this.matrix.forEach((row, y) => {
+    this.gameSystem.getMatrix().forEach((row, y) => {
       row.forEach((col, x) => {
         if (col === 0) {
           this.ctx.fillRect(x, y, x + 1, y + 1);
@@ -80,13 +91,16 @@ export const field = {
       this.endY - this.startY
     );
     this.ctx.stroke();
+    this.ctx.strokeStyle = 'black';
   },
 
   drawUnits: function () {
-    this.gameSystem.units.forEach(unit => {
+    this.gameSystem.getUnits().forEach(unit => {
       const { positionX, positionY, radius } = unit;
       this.ctx.beginPath();
       this.ctx.arc(positionX, positionY, radius, 0, 2 * Math.PI);
+
+      if (unit.isSelected) this.ctx.fill();
       this.ctx.stroke();
     }, this);
   },

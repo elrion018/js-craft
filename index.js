@@ -9,5 +9,7 @@ gameSystem.init();
 gameField.init(app, gameSystem);
 
 gameSystem.createUnit(200, 200);
-
-console.log(gameSystem);
+gameSystem.createUnit(300, 200);
+gameSystem.createUnit(400, 200);
+gameSystem.createUnit(500, 200);
+gameSystem.createUnit(600, 200);
