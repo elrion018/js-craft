@@ -16,8 +16,11 @@ export const system = {
   },
 
   updateUnits: function () {
+    this.timer.capture();
+    const diff = this.timer.getCapturedDiff();
+
     this.units.forEach(unit => {
-      unit.updateStatus();
+      unit.updateStatus(diff);
     });
   },
 

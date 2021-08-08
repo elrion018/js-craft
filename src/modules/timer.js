@@ -21,4 +21,8 @@ export const timer = {
     this.capturedDiff = this.now - this.capturedNow;
     this.capturedNow = this.now;
   },
+
+  getCapturedDiff: function () {
+    return this.capturedDiff;
+  },
 };

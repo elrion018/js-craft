@@ -23,6 +23,7 @@ export const field = {
   },
 
   updateCanvas: function () {
+    this.gameSystem.updateUnits();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.mouseIsPressed && this.endX && this.endY) this.drawDragRect();

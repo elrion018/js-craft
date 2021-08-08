@@ -10,9 +10,9 @@ export const unit = {
     this.isMoving = false;
   },
 
-  updateStatus: function () {
+  updateStatus: function (diff) {
     if (this.isMoving) {
-      this.move();
+      this.move(diff);
     }
   },
 
@@ -33,9 +33,11 @@ export const unit = {
     this.targetY = targetY;
   },
 
-  move: function () {
+  move: function (diff) {
     const angle = this.getAngleBetweenTarget(this.targetX, this.targetY);
-    console.log(angle);
+
+    this.positionX += Math.cos(angle) * this.speed * diff;
+    this.positionY += Math.sin(angle) * this.speed * diff;
   },
 
   getAngleBetweenTarget: function (targetX, targetY) {
