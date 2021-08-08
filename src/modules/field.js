@@ -2,7 +2,7 @@ export const field = {
   init: function (app, gameSystem) {
     this.gameSystem = gameSystem;
     this.setCanvasAndContext(app);
-    this.setCanvasMatrix();
+    this.gameSystem.setMatrix(this.canvas.height, this.canvas.width);
     this.addListenersForMouseEvent();
     requestAnimationFrame(this.updateCanvas.bind(this));
   },
@@ -16,12 +16,6 @@ export const field = {
     this.canvas.height = window.innerHeight;
 
     app.appendChild(this.canvas);
-  },
-
-  setCanvasMatrix: function () {
-    this.matrix = Array.from({ length: this.canvas.height }, () =>
-      Array.from({ length: this.canvas.width }, () => 0)
-    );
   },
 
   updateCanvas: function () {
@@ -48,7 +42,6 @@ export const field = {
 
   handleMouseDown: function (event) {
     const { offsetX, offsetY } = event;
-    this.matrix[offsetY][offsetX] = 1;
     this.startX = offsetX;
     this.startY = offsetY;
 
@@ -58,7 +51,6 @@ export const field = {
   handleMouseMove: function (event) {
     if (this.mouseIsPressed) {
       const { offsetX, offsetY } = event;
-      this.matrix[offsetY][offsetX] = 1;
       this.endX = offsetX;
       this.endY = offsetY;
 
