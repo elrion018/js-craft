@@ -27,18 +27,9 @@ export const field = {
   updateCanvas: function () {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    if (this.mouseIsPressed && this.endX && this.endY) {
-      this.drawDragRect();
-    }
+    if (this.mouseIsPressed && this.endX && this.endY) this.drawDragRect();
 
-    if (this.gameSystem.units.length) {
-      this.gameSystem.units.forEach(unit => {
-        const { positionX, positionY, radius } = unit;
-        this.ctx.beginPath();
-        this.ctx.arc(positionX, positionY, radius, 0, 2 * Math.PI);
-        this.ctx.stroke();
-      }, this);
-    }
+    if (this.gameSystem.units.length) this.drawUnits();
 
     requestAnimationFrame(this.updateCanvas.bind(this));
   },
@@ -97,5 +88,14 @@ export const field = {
       this.endY - this.startY
     );
     this.ctx.stroke();
+  },
+
+  drawUnits: function () {
+    this.gameSystem.units.forEach(unit => {
+      const { positionX, positionY, radius } = unit;
+      this.ctx.beginPath();
+      this.ctx.arc(positionX, positionY, radius, 0, 2 * Math.PI);
+      this.ctx.stroke();
+    }, this);
   },
 };
