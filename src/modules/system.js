@@ -67,7 +67,6 @@ export const system = {
     const selectedUnits = this.getSelectedUnits();
 
     selectedUnits.forEach(unit => {
-      console.log(unit, targetX, targetY);
       unit.move(targetX, targetY);
     });
   },

@@ -3,6 +3,7 @@ export const unit = {
     this.positionX = positionX;
     this.positionY = positionY;
     this.radius = 20;
+    this.speed = 100;
     this.isSelected = false;
   },
 

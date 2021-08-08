@@ -1,18 +1,24 @@
 export const timer = {
   init: function () {
+    this.prev = 0;
     this.now = 0;
-    this.captureNow = 0;
+    this.capturedNow = 0;
+    this.capturedDiff = 0;
   },
 
   start: function () {
     this.interval = setInterval(() => {
-      this.now += 1;
+      this.prev = this.now;
+      this.now += 0.1;
+    }, 100);
+  },
 
-      console.log(this.now);
-    }, 1000);
+  stop: function () {
+    this.interval = null;
   },
 
   capture: function () {
-    this.captureNow = this.now;
+    this.capturedDiff = this.now - this.capturedNow;
+    this.capturedNow = this.now;
   },
 };
