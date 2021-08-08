@@ -1,5 +1,5 @@
 export const field = {
-  init: function (app, gameSystem) {
+  init: function (app) {
     this.setCanvasAndContext(app);
     this.setCanvasMatrix();
     this.addListenersForMouseEvent();

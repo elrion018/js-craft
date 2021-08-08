@@ -1,5 +1,6 @@
 export const system = {
-  init: function () {
+  init: function (gameField) {
+    this.gameField = gameField;
     this.units = [];
   },
 };
