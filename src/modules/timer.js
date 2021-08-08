@@ -9,8 +9,8 @@ export const timer = {
   start: function () {
     this.interval = setInterval(() => {
       this.prev = this.now;
-      this.now += 0.1;
-    }, 100);
+      this.now += 0.01;
+    }, 10);
   },
 
   stop: function () {

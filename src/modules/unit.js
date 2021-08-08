@@ -5,7 +5,7 @@ export const unit = {
     this.targetX = null;
     this.targetY = null;
     this.radius = 20;
-    this.speed = 100;
+    this.speed = 1000;
     this.isSelected = false;
     this.isMoving = false;
   },
@@ -34,13 +34,42 @@ export const unit = {
   },
 
   move: function (diff) {
-    const angle = this.getAngleBetweenTarget(this.targetX, this.targetY);
+    const angle = this.getAngleBetweenTarget();
+    const calculatedDistanceX = Math.cos(angle) * this.speed * diff;
+    const calculatedDistanceY = Math.sin(angle) * this.speed * diff;
 
-    this.positionX += Math.cos(angle) * this.speed * diff;
-    this.positionY += Math.sin(angle) * this.speed * diff;
+    if (
+      (calculatedDistanceX > 0 &&
+        this.positionX + calculatedDistanceX >= this.targetX) ||
+      (calculatedDistanceX < 0 &&
+        this.positionX + calculatedDistanceX <= this.targetX)
+    ) {
+      this.positionX = this.targetX;
+    } else this.positionX += calculatedDistanceX;
+
+    if (
+      (calculatedDistanceY > 0 &&
+        this.positionY + calculatedDistanceY >= this.targetY) ||
+      (calculatedDistanceY < 0 &&
+        this.positionY + calculatedDistanceY <= this.targetY)
+    ) {
+      this.positionY = this.targetY;
+    } else this.positionY += calculatedDistanceY;
+
+    if (this.getDistanceBetweenTarget() <= 1) this.isMoving = false;
   },
 
-  getAngleBetweenTarget: function (targetX, targetY) {
-    return Math.atan2(targetY - this.positionY, targetX - this.positionX);
+  getAngleBetweenTarget: function () {
+    return Math.atan2(
+      this.targetY - this.positionY,
+      this.targetX - this.positionX
+    );
+  },
+
+  getDistanceBetweenTarget: function () {
+    return Math.sqrt(
+      Math.pow(this.positionX - this.targetX, 2) +
+        Math.pow(this.positionY - this.targetY, 2)
+    );
   },
 };
