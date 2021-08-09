@@ -5,13 +5,17 @@ export const system = {
     this.units = [];
     this.matrix = [];
     this.timer = timer;
+
+    this.numberForUnitID = 10;
   },
 
   createUnit: function (positionX, positionY) {
     const createdUnit = Object.create(unit);
 
-    createdUnit.init(positionX, positionY, this);
+    createdUnit.init(positionX, positionY, this.numberForUnitID, this);
     this.units.push(createdUnit);
+
+    this.numberForUnitID += 1;
   },
 
   updateUnits: function () {

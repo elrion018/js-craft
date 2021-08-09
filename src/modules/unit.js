@@ -1,6 +1,7 @@
 export const unit = {
-  init: function (positionX, positionY, gameSystem) {
+  init: function (positionX, positionY, unitID, gameSystem) {
     this.gameSystem = gameSystem;
+    this.unitID = unitID;
     this.positionX = positionX;
     this.positionY = positionY;
     this.targetX = null;
@@ -11,7 +12,7 @@ export const unit = {
     this.isMoving = false;
 
     // 메트릭스에 유닛 배치
-    this.setUnitInMatrix(positionX, positionY, this.radius, 1);
+    this.setUnitInMatrix(positionX, positionY, this.radius, this.unitID);
   },
 
   updateStatus: function (diff) {
@@ -58,18 +59,19 @@ export const unit = {
     )
       return;
 
-    this.setUnitInMatrix(prevPositionX, prevPositionY, this.radius, 0);
-
     // 이동할 위치에 다른 유닛이 이미 존재한다면
     if (
       this.checkUnitInMatrix(
         newPositionXWithMove,
         newPositionYWithMove,
-        this.radius
+        this.radius,
+        this.unitID
       )
     ) {
       return;
     }
+
+    this.setUnitInMatrix(prevPositionX, prevPositionY, this.radius, 0);
 
     this.positionX = newPositionXWithMove;
     this.positionY = newPositionYWithMove;
@@ -78,24 +80,27 @@ export const unit = {
       newPositionXWithMove,
       newPositionYWithMove,
       this.radius,
-      1
+      this.unitID
     );
 
     if (this.getDistanceBetweenTarget() <= 1) this.isMoving = false;
   },
 
-  setUnitInMatrix: function (positionX, positionY, radius, type) {
+  setUnitInMatrix: function (positionX, positionY, radius, unitID) {
     for (let y = positionY - radius; y < positionY + radius; y++) {
       for (let x = positionX - radius; x < positionX + radius; x++) {
-        this.gameSystem.matrix[y][x] = type;
+        this.gameSystem.matrix[y][x] = unitID;
       }
     }
   },
 
-  checkUnitInMatrix: function (positionX, positionY, radius) {
+  checkUnitInMatrix: function (positionX, positionY, radius, unitID) {
     for (let y = positionY - radius; y < positionY + radius; y++) {
       for (let x = positionX - radius; x < positionX + radius; x++) {
-        if (this.gameSystem.matrix[y][x] !== 0) {
+        if (
+          this.gameSystem.matrix[y][x] !== unitID &&
+          this.gameSystem.matrix[y][x] !== 0
+        ) {
           return true;
         }
       }
