@@ -1,10 +1,6 @@
 export const unit = {
   init: function (positionX, positionY, gameSystem) {
     this.gameSystem = gameSystem;
-
-    // 메트릭스에 유닛 배치
-    this.gameSystem.matrix[positionY][positionX] = 1;
-
     this.positionX = positionX;
     this.positionY = positionY;
     this.targetX = null;
@@ -13,6 +9,9 @@ export const unit = {
     this.speed = 1000;
     this.isSelected = false;
     this.isMoving = false;
+
+    // 메트릭스에 유닛 배치
+    this.setUnitInMatrix(positionX, positionY, this.radius, 1);
   },
 
   updateStatus: function (diff) {
@@ -52,8 +51,6 @@ export const unit = {
       calculatedDistanceY
     );
 
-    console.log(this.gameSystem.matrix);
-
     // 이전 위치와 완전 동일하다면
     if (
       newPositionXWithMove === prevPositionX &&
@@ -61,14 +58,50 @@ export const unit = {
     )
       return;
 
+    this.setUnitInMatrix(prevPositionX, prevPositionY, this.radius, 0);
+
     // 이동할 위치에 다른 유닛이 이미 존재한다면
-    if (this.gameSystem.matrix[newPositionYWithMove][newPositionXWithMove])
+    if (
+      this.checkUnitInMatrix(
+        newPositionXWithMove,
+        newPositionYWithMove,
+        this.radius
+      )
+    ) {
       return;
+    }
 
     this.positionX = newPositionXWithMove;
     this.positionY = newPositionYWithMove;
 
+    this.setUnitInMatrix(
+      newPositionXWithMove,
+      newPositionYWithMove,
+      this.radius,
+      1
+    );
+
     if (this.getDistanceBetweenTarget() <= 1) this.isMoving = false;
+  },
+
+  setUnitInMatrix: function (positionX, positionY, radius, type) {
+    for (let y = positionY - radius; y < positionY + radius; y++) {
+      for (let x = positionX - radius; x < positionX + radius; x++) {
+        this.gameSystem.matrix[y][x] = type;
+      }
+    }
+  },
+
+  checkUnitInMatrix: function (positionX, positionY, radius) {
+    for (let y = positionY - radius; y < positionY + radius; y++) {
+      for (let x = positionX - radius; x < positionX + radius; x++) {
+        if (this.gameSystem.matrix[y][x] !== 0) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   },
 
   getNewPositionXWithMove: function (calculatedDistanceX) {
