@@ -1,13 +1,15 @@
 export const unit = {
   init: function (positionX, positionY, gameSystem) {
     this.gameSystem = gameSystem;
+
+    // 메트릭스에 유닛 배치
     this.gameSystem.matrix[positionY][positionX] = 1;
 
     this.positionX = positionX;
     this.positionY = positionY;
     this.targetX = null;
     this.targetY = null;
-    this.radius = 20;
+    this.radius = 10;
     this.speed = 1000;
     this.isSelected = false;
     this.isMoving = false;
@@ -38,35 +40,57 @@ export const unit = {
 
   move: function (diff) {
     const angle = this.getAngleBetweenTarget();
-    const calculatedDistanceX = Math.cos(angle) * this.speed * diff;
-    const calculatedDistanceY = Math.sin(angle) * this.speed * diff;
+    const prevPositionX = this.positionX;
+    const prevPositionY = this.positionY;
+    const calculatedDistanceX = Math.ceil(Math.cos(angle) * this.speed * diff);
+    const calculatedDistanceY = Math.ceil(Math.sin(angle) * this.speed * diff);
 
-    this.setPositionXWithMove(calculatedDistanceX);
-    this.setPositionYWithMove(calculatedDistanceY);
+    const newPositionXWithMove = this.getNewPositionXWithMove(
+      calculatedDistanceX
+    );
+    const newPositionYWithMove = this.getNewPositionYWithMove(
+      calculatedDistanceY
+    );
+
+    console.log(this.gameSystem.matrix);
+
+    // 이전 위치와 완전 동일하다면
+    if (
+      newPositionXWithMove === prevPositionX &&
+      newPositionYWithMove === prevPositionY
+    )
+      return;
+
+    // 이동할 위치에 다른 유닛이 이미 존재한다면
+    if (this.gameSystem.matrix[newPositionYWithMove][newPositionXWithMove])
+      return;
+
+    this.positionX = newPositionXWithMove;
+    this.positionY = newPositionYWithMove;
 
     if (this.getDistanceBetweenTarget() <= 1) this.isMoving = false;
   },
 
-  setPositionXWithMove: function (calculatedDistanceX) {
+  getNewPositionXWithMove: function (calculatedDistanceX) {
+    const newPositionXWithMove = this.positionX + calculatedDistanceX;
+
     if (
-      (calculatedDistanceX > 0 &&
-        this.positionX + calculatedDistanceX >= this.targetX) ||
-      (calculatedDistanceX < 0 &&
-        this.positionX + calculatedDistanceX <= this.targetX)
+      (calculatedDistanceX > 0 && newPositionXWithMove >= this.targetX) ||
+      (calculatedDistanceX < 0 && newPositionXWithMove <= this.targetX)
     ) {
-      this.positionX = this.targetX;
-    } else this.positionX += calculatedDistanceX;
+      return this.targetX;
+    } else return newPositionXWithMove;
   },
 
-  setPositionYWithMove: function (calculatedDistanceY) {
+  getNewPositionYWithMove: function (calculatedDistanceY) {
+    const newPositionYWithMove = this.positionY + calculatedDistanceY;
+
     if (
-      (calculatedDistanceY > 0 &&
-        this.positionY + calculatedDistanceY >= this.targetY) ||
-      (calculatedDistanceY < 0 &&
-        this.positionY + calculatedDistanceY <= this.targetY)
+      (calculatedDistanceY > 0 && newPositionYWithMove >= this.targetY) ||
+      (calculatedDistanceY < 0 && newPositionYWithMove <= this.targetY)
     ) {
-      this.positionY = this.targetY;
-    } else this.positionY += calculatedDistanceY;
+      return this.targetY;
+    } else return newPositionYWithMove;
   },
 
   getAngleBetweenTarget: function () {

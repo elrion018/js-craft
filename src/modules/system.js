@@ -10,7 +10,7 @@ export const system = {
   createUnit: function (positionX, positionY) {
     const createdUnit = Object.create(unit);
 
-    createdUnit.init(positionX, positionY);
+    createdUnit.init(positionX, positionY, this);
     this.units.push(createdUnit);
   },
 
