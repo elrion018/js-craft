@@ -41,6 +41,13 @@ export const unit = {
     const calculatedDistanceX = Math.cos(angle) * this.speed * diff;
     const calculatedDistanceY = Math.sin(angle) * this.speed * diff;
 
+    this.setPositionXWithMove(calculatedDistanceX);
+    this.setPositionYWithMove(calculatedDistanceY);
+
+    if (this.getDistanceBetweenTarget() <= 1) this.isMoving = false;
+  },
+
+  setPositionXWithMove: function (calculatedDistanceX) {
     if (
       (calculatedDistanceX > 0 &&
         this.positionX + calculatedDistanceX >= this.targetX) ||
@@ -49,7 +56,9 @@ export const unit = {
     ) {
       this.positionX = this.targetX;
     } else this.positionX += calculatedDistanceX;
+  },
 
+  setPositionYWithMove: function (calculatedDistanceY) {
     if (
       (calculatedDistanceY > 0 &&
         this.positionY + calculatedDistanceY >= this.targetY) ||
@@ -58,8 +67,6 @@ export const unit = {
     ) {
       this.positionY = this.targetY;
     } else this.positionY += calculatedDistanceY;
-
-    if (this.getDistanceBetweenTarget() <= 1) this.isMoving = false;
   },
 
   getAngleBetweenTarget: function () {
