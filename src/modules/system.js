@@ -9,7 +9,6 @@ export const system = {
 
   createUnit: function (positionX, positionY) {
     const createdUnit = Object.create(unit);
-    this.matrix[positionY][positionX] = 1;
 
     createdUnit.init(positionX, positionY);
     this.units.push(createdUnit);

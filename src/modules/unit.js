@@ -1,5 +1,8 @@
 export const unit = {
-  init: function (positionX, positionY) {
+  init: function (positionX, positionY, gameSystem) {
+    this.gameSystem = gameSystem;
+    this.gameSystem.matrix[positionY][positionX] = 1;
+
     this.positionX = positionX;
     this.positionY = positionY;
     this.targetX = null;
