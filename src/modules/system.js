@@ -1,7 +1,7 @@
 import { unit } from './unit.js';
 
 export const system = {
-  init: function (timer) {
+  systemInit: function (timer) {
     this.units = [];
     this.matrix = [];
     this.timer = timer;
@@ -12,7 +12,7 @@ export const system = {
   createUnit: function (positionX, positionY) {
     const createdUnit = Object.create(unit);
 
-    createdUnit.init(positionX, positionY, this.numberForUnitID, this);
+    createdUnit.unitInit(positionX, positionY, this.numberForUnitID, this);
     this.units.push(createdUnit);
 
     this.numberForUnitID += 1;

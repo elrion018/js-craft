@@ -1,5 +1,5 @@
 export const field = {
-  init: function (app, gameSystem) {
+  fieldInit: function (app, gameSystem) {
     this.gameSystem = gameSystem;
     this.endX = null;
     this.endY = null;

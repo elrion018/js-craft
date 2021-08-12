@@ -1,5 +1,5 @@
 export const unit = {
-  init: function (positionX, positionY, unitID, gameSystem) {
+  unitInit: function (positionX, positionY, unitID, gameSystem) {
     this.gameSystem = gameSystem;
     this.unitID = unitID;
     this.positionX = positionX;

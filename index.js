@@ -7,10 +7,10 @@ const gameSystem = Object.create(system);
 const gameTimer = Object.create(timer);
 const gameField = Object.create(field);
 
-gameTimer.init();
+gameTimer.timerInit();
 gameTimer.start();
-gameSystem.init(gameTimer);
-gameField.init(app, gameSystem);
+gameSystem.systemInit(gameTimer);
+gameField.fieldInit(app, gameSystem);
 
 gameSystem.createUnit(200, 200);
 gameSystem.createUnit(300, 200);

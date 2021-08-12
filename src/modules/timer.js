@@ -1,5 +1,5 @@
 export const timer = {
-  init: function () {
+  timerInit: function () {
     this.prev = 0;
     this.now = 0;
     this.capturedNow = 0;
