@@ -3,6 +3,7 @@ import { unit } from './unit.js';
 export const system = {
   init: function (timer) {
     this.units = [];
+    this.unitsObject = {};
     this.matrix = [];
     this.timer = timer;
 
@@ -14,6 +15,7 @@ export const system = {
 
     createdUnit.init(positionX, positionY, this.numberForUnitID, this);
     this.units.push(createdUnit);
+    this.unitsObject[this.numberForUnitID] = createdUnit;
 
     this.numberForUnitID += 1;
   },
@@ -62,17 +64,20 @@ export const system = {
   },
 
   selectUnitWithOneTouch(startX, startY) {
-    this.units.forEach(unit => {
-      const { positionX, positionY } = unit.getPositions();
+    const unitIDs = Object.keys(this.unitsObject);
 
-      if (positionX === startX && positionY === startY) {
-        unit.setIsSelected(true);
-
-        return;
-      }
-
-      unit.setIsSelected(false);
+    unitIDs.forEach(unitID => {
+      this.unitsObject[unitID].setIsSelected(false);
     });
+
+    const selectedUnitID = this.matrix[startY][startX];
+
+    if (this.unitsObject.hasOwnProperty(`${selectedUnitID}`)) {
+      const unit = this.unitsObject[selectedUnitID];
+
+      unit.setIsSelected(true);
+      return;
+    }
   },
 
   commandUnitsToMove(targetX, targetY) {
