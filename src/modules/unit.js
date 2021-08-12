@@ -27,6 +27,13 @@ export const unit = {
       positionY: this.positionY,
     };
   },
+  getUnitID: function () {
+    return this.unitID;
+  },
+
+  getIsSelected: function () {
+    return this.isSelected;
+  },
 
   setIsSelected: function (isSelected) {
     this.isSelected = isSelected;
