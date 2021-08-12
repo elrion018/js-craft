@@ -8,5 +8,15 @@ export const Building = {
     this.isSelected = false;
     this.isCompleted = false;
     this.size = 100;
+
+    this.setBuildingInMatrix(positionX, positionY, this.size, this.buildingID);
+  },
+
+  setBuildingInMatrix: function (positionX, positionY, size, buildingID) {
+    for (let y = positionY; y < positionY + size; y++) {
+      for (let x = positionX; x < positionX + size; x++) {
+        this.gameSystem.setMatrix(y, x, buildingID);
+      }
+    }
   },
 };

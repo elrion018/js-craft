@@ -17,3 +17,4 @@ gameSystem.createUnit(300, 200);
 gameSystem.createUnit(400, 200);
 gameSystem.createUnit(500, 200);
 gameSystem.createUnit(600, 200);
+gameSystem.createBuilding(500, 500);

@@ -58,6 +58,10 @@ export const System = {
     return this.units;
   },
 
+  getBuildings: function () {
+    return this.buildings;
+  },
+
   getSelectedUnits: function () {
     return this.units.filter(unit => {
       return unit.getIsSelected();

@@ -27,7 +27,9 @@ export const Field = {
 
     if (this.mouseIsPressed && this.endX && this.endY) this.drawDragRect();
 
-    if (this.gameSystem.units.length) this.drawUnits();
+    if (this.gameSystem.getUnits().length) this.drawUnits();
+
+    if (this.gameSystem.getBuildings().length) this.drawBuildings();
 
     requestAnimationFrame(this.updateCanvas.bind(this));
   },
@@ -128,13 +130,22 @@ export const Field = {
 
   drawUnits: function () {
     this.gameSystem.getUnits().forEach(unit => {
-      const { positionX, positionY, radius } = unit;
+      const { positionX, positionY, radius, isSelected } = unit;
       this.ctx.beginPath();
       this.ctx.arc(positionX, positionY, radius, 0, 2 * Math.PI);
 
-      if (unit.isSelected) this.ctx.fill();
+      if (isSelected) this.ctx.fill();
 
       this.ctx.stroke();
+    }, this);
+  },
+
+  drawBuildings: function () {
+    this.gameSystem.getBuildings().forEach(building => {
+      const { positionX, positionY, size, isSelected } = building;
+
+      if (isSelected) this.ctx.fillRect(positionX, positionY, size, size);
+      else this.ctx.strokeRect(positionX, positionY, size, size);
     }, this);
   },
 };
