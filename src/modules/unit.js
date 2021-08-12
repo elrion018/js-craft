@@ -1,4 +1,4 @@
-export const unit = {
+export const Unit = {
   unitInit: function (positionX, positionY, unitID, gameSystem) {
     this.gameSystem = gameSystem;
     this.unitID = unitID;
