@@ -1,4 +1,4 @@
-export const field = {
+export const Field = {
   fieldInit: function (app, gameSystem) {
     this.gameSystem = gameSystem;
     this.endX = null;

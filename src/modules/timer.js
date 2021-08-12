@@ -1,4 +1,4 @@
-export const timer = {
+export const Timer = {
   timerInit: function () {
     this.prev = 0;
     this.now = 0;

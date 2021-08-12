@@ -1,6 +1,6 @@
 import { unit } from './unit.js';
 
-export const system = {
+export const System = {
   systemInit: function (timer) {
     this.units = [];
     this.matrix = [];

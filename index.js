@@ -1,11 +1,11 @@
-import { system } from './src/modules/system.js';
-import { field } from './src/modules/field.js';
-import { timer } from './src/modules/timer.js';
+import { System } from './src/modules/System.js';
+import { Field } from './src/modules/Field.js';
+import { Timer } from './src/modules/Timer.js';
 
 const app = document.querySelector('#app');
-const gameSystem = Object.create(system);
-const gameTimer = Object.create(timer);
-const gameField = Object.create(field);
+const gameSystem = Object.create(System);
+const gameTimer = Object.create(Timer);
+const gameField = Object.create(Field);
 
 gameTimer.timerInit();
 gameTimer.start();
