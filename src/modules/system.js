@@ -1,4 +1,5 @@
 import { Unit } from './Unit.js';
+import { Building } from './Building.js';
 
 export const System = {
   systemInit: function (timer) {
@@ -8,7 +9,8 @@ export const System = {
     );
     this.timer = timer;
 
-    this.numberForUnitID = 10;
+    this.numberForUnitID = 0;
+    this.numberForBuildingID = 0;
   },
 
   setMatrix: function (y, x, value) {
@@ -26,6 +28,12 @@ export const System = {
     this.units.push(createdUnit);
 
     this.numberForUnitID += 1;
+  },
+
+  createBuilding: function (positionX, positionY) {
+    const createdBuilding = Object.create(Building);
+
+    createdBuilding.buildingInit();
   },
 
   updateUnits: function () {

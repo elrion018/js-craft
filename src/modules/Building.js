@@ -1,7 +1,7 @@
 export const Building = {
   buildingInit: function (positionX, positionY, buildingID, gameSystem) {
     this.gameSystem = gameSystem;
-    this.buildingID = buildingID;
+    this.buildingID = `building-${buildingID}`;
     this.positionX = positionX;
     this.positionY = positionY;
     this.constructionProgress = 0;
