@@ -11,8 +11,8 @@ export const System = {
     this.numberForUnitID = 10;
   },
 
-  setMatrix: function (positionX, positionY, value) {
-    this.matrix[positionY][positionX] = value;
+  setMatrix: function (y, x, value) {
+    this.matrix[y][x] = value;
   },
 
   getMatrix: function () {

@@ -96,18 +96,17 @@ export const Unit = {
   setUnitInMatrix: function (positionX, positionY, radius, unitID) {
     for (let y = positionY - radius; y < positionY + radius; y++) {
       for (let x = positionX - radius; x < positionX + radius; x++) {
-        this.gameSystem.matrix[y][x] = unitID;
+        this.gameSystem.setMatrix(y, x, unitID);
       }
     }
   },
 
   checkUnitInMatrix: function (positionX, positionY, radius, unitID) {
+    const matrix = this.gameSystem.getMatrix();
+
     for (let y = positionY - radius; y < positionY + radius; y++) {
       for (let x = positionX - radius; x < positionX + radius; x++) {
-        if (
-          this.gameSystem.matrix[y][x] !== unitID &&
-          this.gameSystem.matrix[y][x] !== 0
-        ) {
+        if (matrix[y][x] !== unitID && matrix[y][x] !== 0) {
           return true;
         }
       }
