@@ -4,14 +4,13 @@ export const Field = {
     this.endX = null;
     this.endY = null;
 
-    this.setCanvasAndContext(app);
-    this.gameSystem.setMatrix(this.canvas.height, this.canvas.width);
+    this.createCanvasAndContext(app);
     this.addListenersForMouseEvent();
 
     requestAnimationFrame(this.updateCanvas.bind(this));
   },
 
-  setCanvasAndContext: function (app) {
+  createCanvasAndContext: function (app) {
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
 

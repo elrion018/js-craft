@@ -3,10 +3,20 @@ import { Unit } from './Unit.js';
 export const System = {
   systemInit: function (timer) {
     this.units = [];
-    this.matrix = [];
+    this.matrix = Array.from({ length: window.innerHeight }, () =>
+      Array.from({ length: window.innerWidth }, () => 0)
+    );
     this.timer = timer;
 
     this.numberForUnitID = 10;
+  },
+
+  setMatrix: function (positionX, positionY, value) {
+    this.matrix[positionY][positionX] = value;
+  },
+
+  getMatrix: function () {
+    return this.matrix;
   },
 
   createUnit: function (positionX, positionY) {
@@ -81,15 +91,5 @@ export const System = {
     selectedUnits.forEach(unit => {
       unit.setTargetForMove(targetX, targetY);
     });
-  },
-
-  setMatrix: function (height, width) {
-    this.matrix = Array.from({ length: height }, () =>
-      Array.from({ length: width }, () => 0)
-    );
-  },
-
-  getMatrix: function () {
-    return this.matrix;
   },
 };
