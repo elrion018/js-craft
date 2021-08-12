@@ -4,6 +4,7 @@ import { Building } from './Building.js';
 export const System = {
   systemInit: function (timer) {
     this.units = [];
+    this.buildings = [];
     this.matrix = Array.from({ length: window.innerHeight }, () =>
       Array.from({ length: window.innerWidth }, () => 0)
     );
@@ -33,7 +34,15 @@ export const System = {
   createBuilding: function (positionX, positionY) {
     const createdBuilding = Object.create(Building);
 
-    createdBuilding.buildingInit();
+    createdBuilding.buildingInit(
+      positionX,
+      positionY,
+      this.numberForBuildingID,
+      this
+    );
+    this.buildings.push(createdBuilding);
+
+    this.numberForBuildingID += 1;
   },
 
   updateUnits: function () {
