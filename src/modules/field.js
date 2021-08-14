@@ -88,7 +88,7 @@ export const Field = {
 
       this.gameSystem.setRightClickObject(targetX, targetY);
 
-      this.gameSystem.commandUnitsToMove(targetX, targetY);
+      this.gameSystem.commandUnit(targetX, targetY);
     }
   },
 

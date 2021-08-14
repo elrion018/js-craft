@@ -215,4 +215,8 @@ export const System = {
       unit.setTargetForMove(targetX, targetY);
     });
   },
+
+  commandUnit(targetX, targetY) {
+    this.commandUnitsToMove(targetX, targetY);
+  },
 };
