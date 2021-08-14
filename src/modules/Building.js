@@ -19,7 +19,7 @@ export const Building = {
   setBuildingInMatrix: function (positionX, positionY, size, buildingID) {
     for (let y = positionY - size / 2; y < positionY + size / 2; y++) {
       for (let x = positionX - size / 2; x < positionX + size / 2; x++) {
-        this.gameSystem.setMatrix(y, x, buildingID);
+        this.gameSystem.setMatrix(x, y, buildingID);
       }
     }
   },

@@ -68,7 +68,7 @@ export const Unit = {
 
     // 이동할 위치에 다른 유닛이 이미 존재한다면
     if (
-      this.checkUnitInMatrix(
+      this.checkObjectInMatrix(
         newPositionXWithMove,
         newPositionYWithMove,
         this.radius,
@@ -96,12 +96,12 @@ export const Unit = {
   setUnitInMatrix: function (positionX, positionY, radius, unitID) {
     for (let y = positionY - radius; y < positionY + radius; y++) {
       for (let x = positionX - radius; x < positionX + radius; x++) {
-        this.gameSystem.setMatrix(y, x, unitID);
+        this.gameSystem.setMatrix(x, y, unitID);
       }
     }
   },
 
-  checkUnitInMatrix: function (positionX, positionY, radius, unitID) {
+  checkObjectInMatrix: function (positionX, positionY, radius, unitID) {
     const matrix = this.gameSystem.getMatrix();
 
     for (let y = positionY - radius; y < positionY + radius; y++) {

@@ -1,10 +1,12 @@
 import { Unit } from './Unit.js';
 import { Building } from './Building.js';
+import { Resource } from './Resource.js';
 
 export const System = {
   systemInit: function (timer) {
     this.units = [];
     this.buildings = [];
+    this.resources = [];
     this.matrix = Array.from({ length: window.innerHeight }, () =>
       Array.from({ length: window.innerWidth }, () => 0)
     );
@@ -12,14 +14,11 @@ export const System = {
 
     this.numberForUnitID = 0;
     this.numberForBuildingID = 0;
+    this.numberForResourceID = 0;
   },
 
-  setMatrix: function (y, x, value) {
+  setMatrix: function (x, y, value) {
     this.matrix[y][x] = value;
-  },
-
-  getMatrix: function () {
-    return this.matrix;
   },
 
   createUnit: function (positionX, positionY) {
@@ -45,6 +44,21 @@ export const System = {
     this.numberForBuildingID += 1;
   },
 
+  createResource: function (positionX, positionY) {
+    const createdResource = Object.create(Resource);
+
+    createdResource.resourceInit(
+      positionX,
+      positionY,
+      this.numberForResourceID,
+      this
+    );
+
+    this.resources.push(createdResource);
+
+    this.numberForBuildingID += 1;
+  },
+
   updateUnits: function () {
     this.timer.capture();
     const diff = this.timer.getCapturedDiff();
@@ -54,12 +68,20 @@ export const System = {
     });
   },
 
+  getMatrix: function () {
+    return this.matrix;
+  },
+
   getUnits: function () {
     return this.units;
   },
 
   getBuildings: function () {
     return this.buildings;
+  },
+
+  getResources: function () {
+    return this.resources;
   },
 
   getSelectedUnits: function () {
