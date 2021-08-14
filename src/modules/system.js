@@ -90,19 +90,33 @@ export const System = {
 
       unit.setIsSelected(false);
     });
+
+    this.buildings.forEach(building => {
+      building.setIsSelected(false);
+    });
   },
 
-  selectUnitWithOneTouch(startX, startY) {
-    const selectedUnitID = this.matrix[startY][startX];
+  selectObjectWithOneTouch(startX, startY) {
+    const selectedObjectID = this.matrix[startY][startX];
 
     this.units.forEach(unit => {
-      if (unit.getUnitID() === selectedUnitID) {
+      if (unit.getUnitID() === selectedObjectID) {
         unit.setIsSelected(true);
 
         return;
       }
 
       unit.setIsSelected(false);
+    });
+
+    this.buildings.forEach(building => {
+      if (building.getBuildingID() === selectedObjectID) {
+        building.setIsSelected(true);
+
+        return;
+      }
+
+      building.setIsSelected(false);
     });
   },
 

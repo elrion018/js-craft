@@ -12,11 +12,19 @@ export const Building = {
     this.setBuildingInMatrix(positionX, positionY, this.size, this.buildingID);
   },
 
+  getBuildingID: function () {
+    return this.buildingID;
+  },
+
   setBuildingInMatrix: function (positionX, positionY, size, buildingID) {
     for (let y = positionY; y < positionY + size; y++) {
       for (let x = positionX; x < positionX + size; x++) {
         this.gameSystem.setMatrix(y, x, buildingID);
       }
     }
+  },
+
+  setIsSelected: function (isSelected) {
+    this.isSelected = isSelected;
   },
 };

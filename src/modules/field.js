@@ -65,7 +65,7 @@ export const Field = {
     }
 
     if (!this.isDraged && !this.endX && !this.endY) {
-      this.gameSystem.selectUnitWithOneTouch(this.startX, this.startY);
+      this.gameSystem.selectObjectWithOneTouch(this.startX, this.startY);
     }
 
     this.endX = null;
