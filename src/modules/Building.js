@@ -7,7 +7,7 @@ export const Building = {
     this.constructionProgress = 0;
     this.isSelected = false;
     this.isCompleted = false;
-    this.size = 100;
+    this.size = 100; // 짝수로 할 것
 
     this.setBuildingInMatrix(positionX, positionY, this.size, this.buildingID);
   },
@@ -17,8 +17,8 @@ export const Building = {
   },
 
   setBuildingInMatrix: function (positionX, positionY, size, buildingID) {
-    for (let y = positionY; y < positionY + size; y++) {
-      for (let x = positionX; x < positionX + size; x++) {
+    for (let y = positionY - size / 2; y < positionY + size / 2; y++) {
+      for (let x = positionX - size / 2; x < positionX + size / 2; x++) {
         this.gameSystem.setMatrix(y, x, buildingID);
       }
     }

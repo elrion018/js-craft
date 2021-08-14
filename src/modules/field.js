@@ -144,8 +144,20 @@ export const Field = {
     this.gameSystem.getBuildings().forEach(building => {
       const { positionX, positionY, size, isSelected } = building;
 
-      if (isSelected) this.ctx.fillRect(positionX, positionY, size, size);
-      else this.ctx.strokeRect(positionX, positionY, size, size);
+      if (isSelected)
+        this.ctx.fillRect(
+          positionX - size / 2,
+          positionY - size / 2,
+          size,
+          size
+        );
+      else
+        this.ctx.strokeRect(
+          positionX - size / 2,
+          positionY - size / 2,
+          size,
+          size
+        );
     }, this);
   },
 };
