@@ -7,8 +7,20 @@ export const Workman = {
     this.isMining = false;
     this.radius = 10;
     this.speed = 1000;
+    this.targetResource = {};
 
     this.setUnitInMatrix(positionX, positionY, this.radius, this.id);
+  },
+
+  setTargetForMining: function (targetResource, targetX, targetY) {
+    this.isMining = true;
+    this.isMoving = true;
+
+    this.startX = this.positionX;
+    this.startY = this.positionY;
+    this.targetX = targetX;
+    this.targetY = targetY;
+    this.targetResource = targetResource;
   },
 };
 

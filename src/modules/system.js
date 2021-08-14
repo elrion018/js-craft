@@ -208,28 +208,35 @@ export const System = {
     });
   },
 
-  commandUnitsToMove(targetX, targetY) {
-    const selectedUnits = this.selectedObjects.filter(object => {
-      return object.type === 'unit';
-    });
+  commandUnitToMove(unit, targetX, targetY) {
+    unit.setTargetForMove(targetX, targetY);
+  },
 
-    selectedUnits.forEach(unit => {
-      unit.setTargetForMove(targetX, targetY);
-    });
+  commandUnitToMine(unit, targetX, targetY) {
+    unit.setTargetForMining(this.rightClickObject, targetX, targetY);
+  },
+
+  commandUnit(unit, targetX, targetY) {
+    if (Object.keys(this.rightClickObject).length === 0)
+      this.commandUnitToMove(unit, targetX, targetY);
+
+    if (this.rightClickObject.type === 'resource' && unit.subtype === 'workman')
+      this.commandUnitToMine(unit, targetX, targetY);
+
+    if (this.rightClickObject.type === 'unit')
+      this.commandUnitToMove(unit, targetX, targetY);
+
+    if (this.rightClickObject.type === 'building')
+      this.commandUnitToMove(unit, targetX, targetY);
   },
 
   commandUnits(targetX, targetY) {
     console.log(this.rightClickObject);
-    if (Object.keys(this.rightClickObject).length === 0)
-      this.commandUnitsToMove(targetX, targetY);
 
-    if (this.rightClickObject.type === 'resource')
-      this.commandUnitsToMove(targetX, targetY);
-
-    if (this.rightClickObject.type === 'unit')
-      this.commandUnitsToMove(targetX, targetY);
-
-    if (this.rightClickObject.type === 'building')
-      this.commandUnitsToMove(targetX, targetY);
+    this.selectedObjects.forEach(object => {
+      if (object.type === 'unit') {
+        this.commandUnit(object, targetX, targetY);
+      }
+    });
   },
 };

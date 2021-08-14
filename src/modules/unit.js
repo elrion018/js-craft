@@ -5,6 +5,8 @@ export const Unit = {
     this.id = `unit-${id}`;
     this.positionX = positionX;
     this.positionY = positionY;
+    this.startX = null;
+    this.startY = null;
     this.targetX = null;
     this.targetY = null;
     this.isSelected = false;
@@ -37,6 +39,8 @@ export const Unit = {
 
   setTargetForMove: function (targetX, targetY) {
     this.isMoving = true;
+    this.startX = this.positionX;
+    this.startY = this.positionY;
     this.targetX = targetX;
     this.targetY = targetY;
   },
@@ -63,16 +67,26 @@ export const Unit = {
       return;
 
     // 이동할 위치에 다른 유닛이 이미 존재한다면
-    if (
-      this.checkObjectInMatrix(
-        newPositionXWithMove,
-        newPositionYWithMove,
-        this.radius,
-        this.id
-      )
-    ) {
+    const unitExistCheckResult = this.checkObjectInMatrix(
+      newPositionXWithMove,
+      newPositionYWithMove,
+      this.radius,
+      this.id
+    );
+
+    if (unitExistCheckResult && this.isMining) {
+      const tempX = this.targetX;
+      const tempY = this.targetY;
+
+      this.targetX = this.startX;
+      this.targetY = this.startY;
+      this.startX = tempX;
+      this.startY = tempY;
+
       return;
     }
+
+    if (unitExistCheckResult) return;
 
     this.setUnitInMatrix(prevPositionX, prevPositionY, this.radius, 0);
 
@@ -86,7 +100,22 @@ export const Unit = {
       this.id
     );
 
-    if (this.getDistanceBetweenTarget() <= 1) this.isMoving = false;
+    const distanceBetweenTarget = this.getDistanceBetweenTarget();
+    if (distanceBetweenTarget <= 1 && this.isMining) {
+      const tempX = this.targetX;
+      const tempY = this.targetY;
+
+      this.targetX = this.startX;
+      this.targetY = this.startY;
+      this.startX = tempX;
+      this.startY = tempY;
+
+      return;
+    }
+
+    if (distanceBetweenTarget <= 1) {
+      this.isMoving = false;
+    }
   },
 
   setUnitInMatrix: function (positionX, positionY, radius, id) {
