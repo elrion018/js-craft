@@ -86,6 +86,8 @@ export const Field = {
     if (event.which === 3) {
       const { offsetX: targetX, offsetY: targetY } = event;
 
+      this.gameSystem.setRightClickObject(targetX, targetY);
+
       this.gameSystem.commandUnitsToMove(targetX, targetY);
     }
   },

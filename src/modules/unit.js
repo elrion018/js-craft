@@ -1,7 +1,8 @@
 export const Unit = {
-  unitInit: function (positionX, positionY, unitID, gameSystem) {
+  unitInit: function (positionX, positionY, id, gameSystem) {
     this.gameSystem = gameSystem;
-    this.unitID = `unit-${unitID}`;
+    this.type = 'unit';
+    this.id = `unit-${id}`;
     this.positionX = positionX;
     this.positionY = positionY;
     this.targetX = null;
@@ -12,7 +13,7 @@ export const Unit = {
     this.isMoving = false;
 
     // 메트릭스에 유닛 배치
-    this.setUnitInMatrix(positionX, positionY, this.radius, this.unitID);
+    this.setUnitInMatrix(positionX, positionY, this.radius, this.id);
   },
 
   updateStatus: function (diff) {
@@ -28,7 +29,7 @@ export const Unit = {
     };
   },
   getUnitID: function () {
-    return this.unitID;
+    return this.id;
   },
 
   getIsSelected: function () {
@@ -72,7 +73,7 @@ export const Unit = {
         newPositionXWithMove,
         newPositionYWithMove,
         this.radius,
-        this.unitID
+        this.id
       )
     ) {
       return;
@@ -87,26 +88,26 @@ export const Unit = {
       newPositionXWithMove,
       newPositionYWithMove,
       this.radius,
-      this.unitID
+      this.id
     );
 
     if (this.getDistanceBetweenTarget() <= 1) this.isMoving = false;
   },
 
-  setUnitInMatrix: function (positionX, positionY, radius, unitID) {
+  setUnitInMatrix: function (positionX, positionY, radius, id) {
     for (let y = positionY - radius; y < positionY + radius; y++) {
       for (let x = positionX - radius; x < positionX + radius; x++) {
-        this.gameSystem.setMatrix(x, y, unitID);
+        this.gameSystem.setMatrix(x, y, id);
       }
     }
   },
 
-  checkObjectInMatrix: function (positionX, positionY, radius, unitID) {
+  checkObjectInMatrix: function (positionX, positionY, radius, id) {
     const matrix = this.gameSystem.getMatrix();
 
     for (let y = positionY - radius; y < positionY + radius; y++) {
       for (let x = positionX - radius; x < positionX + radius; x++) {
-        if (matrix[y][x] !== unitID && matrix[y][x] !== 0) {
+        if (matrix[y][x] !== id && matrix[y][x] !== 0) {
           return true;
         }
       }

@@ -11,14 +11,12 @@ export const System = {
       Array.from({ length: window.innerWidth }, () => 0)
     );
     this.timer = timer;
+    this.selectedObjects = [];
+    this.rightClickObject = {};
 
     this.numberForUnitID = 0;
     this.numberForBuildingID = 0;
     this.numberForResourceID = 0;
-  },
-
-  setMatrix: function (x, y, value) {
-    this.matrix[y][x] = value;
   },
 
   createUnit: function (positionX, positionY) {
@@ -84,9 +82,30 @@ export const System = {
     return this.resources;
   },
 
-  getSelectedUnits: function () {
-    return this.units.filter(unit => {
-      return unit.getIsSelected();
+  getSelectedObjects: function () {
+    return this.selectedObjects;
+  },
+
+  getRightClickObject: function () {
+    return this.rightClickObject;
+  },
+
+  setMatrix: function (x, y, value) {
+    this.matrix[y][x] = value;
+  },
+
+  setRightClickObject: function (x, y) {
+    const objectID = this.matrix[y][x];
+    const objects = [...this.units, ...this.buildings, ...this.resources];
+
+    objects.forEach(object => {
+      if (objectID === object.id) {
+        this.rightClickObject = object;
+
+        console.log(this.rightClickObject);
+
+        return;
+      }
     });
   },
 
@@ -95,6 +114,7 @@ export const System = {
     const rightX = Math.max(startX, endX);
     const topY = Math.max(startY, endY);
     const bottomY = Math.min(startY, endY);
+    const selectedUnits = [];
 
     this.units.forEach(unit => {
       const { positionX, positionY } = unit.getPositions();
@@ -106,12 +126,15 @@ export const System = {
         positionY >= bottomY
       ) {
         unit.setIsSelected(true);
+        selectedUnits.push(unit);
 
         return;
       }
 
       unit.setIsSelected(false);
     });
+
+    this.selectedObjects = selectedUnits;
 
     this.buildings.forEach(building => {
       building.setIsSelected(false);
@@ -135,6 +158,8 @@ export const System = {
       if (unit.getUnitID() === selectedObjectID) {
         unit.setIsSelected(true);
 
+        this.selectedObjects = [unit];
+
         return;
       }
 
@@ -146,6 +171,8 @@ export const System = {
     this.buildings.forEach(building => {
       if (building.getBuildingID() === selectedObjectID) {
         building.setIsSelected(true);
+
+        this.selectedObjects = [building];
 
         return;
       }
@@ -159,6 +186,8 @@ export const System = {
       if (resource.getResourceID() === selectedObjectID) {
         resource.setIsSelected(true);
 
+        this.selectedObjects = [resource];
+
         return;
       }
 
@@ -167,7 +196,9 @@ export const System = {
   },
 
   commandUnitsToMove(targetX, targetY) {
-    const selectedUnits = this.getSelectedUnits();
+    const selectedUnits = this.selectedObjects.filter(object => {
+      return object.type === 'unit';
+    });
 
     selectedUnits.forEach(unit => {
       unit.setTargetForMove(targetX, targetY);

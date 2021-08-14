@@ -1,7 +1,8 @@
 export const Building = {
-  buildingInit: function (positionX, positionY, buildingID, gameSystem) {
+  buildingInit: function (positionX, positionY, id, gameSystem) {
     this.gameSystem = gameSystem;
-    this.buildingID = `building-${buildingID}`;
+    this.type = 'building';
+    this.id = `building-${id}`;
     this.positionX = positionX;
     this.positionY = positionY;
     this.constructionProgress = 0;
@@ -9,17 +10,17 @@ export const Building = {
     this.isCompleted = false;
     this.size = 100; // 짝수로 할 것
 
-    this.setBuildingInMatrix(positionX, positionY, this.size, this.buildingID);
+    this.setBuildingInMatrix(positionX, positionY, this.size, this.id);
   },
 
   getBuildingID: function () {
-    return this.buildingID;
+    return this.id;
   },
 
-  setBuildingInMatrix: function (positionX, positionY, size, buildingID) {
+  setBuildingInMatrix: function (positionX, positionY, size, id) {
     for (let y = positionY - size / 2; y < positionY + size / 2; y++) {
       for (let x = positionX - size / 2; x < positionX + size / 2; x++) {
-        this.gameSystem.setMatrix(x, y, buildingID);
+        this.gameSystem.setMatrix(x, y, id);
       }
     }
   },

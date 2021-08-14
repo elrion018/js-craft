@@ -1,7 +1,8 @@
 export const Resource = {
-  resourceInit: function (positionX, positionY, resourceID, gameSystem) {
+  resourceInit: function (positionX, positionY, id, gameSystem) {
     this.gameSystem = gameSystem;
-    this.resourceID = `resource-${resourceID}`;
+    this.type = 'resource';
+    this.id = `resource-${id}`;
     this.positionX = positionX;
     this.positionY = positionY;
     this.isSelected = false;
@@ -12,18 +13,18 @@ export const Resource = {
       this.positionX,
       this.positionY,
       this.size,
-      this.resourceID
+      this.id
     );
   },
 
   getResourceID: function () {
-    return this.resourceID;
+    return this.id;
   },
 
-  setResourceInMatrix: function (positionX, positionY, size, resourceID) {
+  setResourceInMatrix: function (positionX, positionY, size, id) {
     for (let y = positionY - size / 2; y < positionY + size / 2; y++) {
       for (let x = positionX - size / 2; x < positionX + size / 2; x++) {
-        this.gameSystem.setMatrix(x, y, resourceID);
+        this.gameSystem.setMatrix(x, y, id);
       }
     }
   },
