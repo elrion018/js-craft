@@ -105,15 +105,17 @@ export const System = {
   setRightClickObject: function (x, y) {
     const objectID = this.matrix[y][x];
 
-    if (objectID === 0) return;
+    if (objectID === 0) {
+      this.rightClickObject = {};
+
+      return;
+    }
 
     const objects = [...this.units, ...this.buildings, ...this.resources];
 
     objects.forEach(object => {
       if (objectID === object.id) {
         this.rightClickObject = object;
-
-        console.log(this.rightClickObject);
 
         return;
       }
@@ -216,7 +218,18 @@ export const System = {
     });
   },
 
-  commandUnit(targetX, targetY) {
-    this.commandUnitsToMove(targetX, targetY);
+  commandUnits(targetX, targetY) {
+    console.log(this.rightClickObject);
+    if (Object.keys(this.rightClickObject).length === 0)
+      this.commandUnitsToMove(targetX, targetY);
+
+    if (this.rightClickObject.type === 'resource')
+      this.commandUnitsToMove(targetX, targetY);
+
+    if (this.rightClickObject.type === 'unit')
+      this.commandUnitsToMove(targetX, targetY);
+
+    if (this.rightClickObject.type === 'building')
+      this.commandUnitsToMove(targetX, targetY);
   },
 };
