@@ -1,7 +1,7 @@
 export const Unit = {
   unitInit: function (positionX, positionY, unitID, gameSystem) {
     this.gameSystem = gameSystem;
-    this.unitID = ` unit-${unitID}`;
+    this.unitID = `unit-${unitID}`;
     this.positionX = positionX;
     this.positionY = positionY;
     this.targetX = null;

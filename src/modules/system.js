@@ -56,7 +56,7 @@ export const System = {
 
     this.resources.push(createdResource);
 
-    this.numberForBuildingID += 1;
+    this.numberForResourceID += 1;
   },
 
   updateUnits: function () {
@@ -116,11 +116,21 @@ export const System = {
     this.buildings.forEach(building => {
       building.setIsSelected(false);
     });
+
+    this.resources.forEach(resource => {
+      resource.setIsSelected(false);
+    });
   },
 
   selectObjectWithOneTouch(startX, startY) {
     const selectedObjectID = this.matrix[startY][startX];
 
+    this.selectOneUnit(selectedObjectID);
+    this.selectOneBuilding(selectedObjectID);
+    this.selectOneResource(selectedObjectID);
+  },
+
+  selectOneUnit: function (selectedObjectID) {
     this.units.forEach(unit => {
       if (unit.getUnitID() === selectedObjectID) {
         unit.setIsSelected(true);
@@ -130,7 +140,9 @@ export const System = {
 
       unit.setIsSelected(false);
     });
+  },
 
+  selectOneBuilding: function (selectedObjectID) {
     this.buildings.forEach(building => {
       if (building.getBuildingID() === selectedObjectID) {
         building.setIsSelected(true);
@@ -139,6 +151,18 @@ export const System = {
       }
 
       building.setIsSelected(false);
+    });
+  },
+
+  selectOneResource: function (selectedObjectID) {
+    this.resources.forEach(resource => {
+      if (resource.getResourceID() === selectedObjectID) {
+        resource.setIsSelected(true);
+
+        return;
+      }
+
+      resource.setIsSelected(false);
     });
   },
 
