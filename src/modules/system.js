@@ -1,6 +1,7 @@
 import { Unit } from './Unit.js';
 import { Building } from './Building.js';
 import { Resource } from './Resource.js';
+import { Workman } from './Workman.js';
 
 export const System = {
   systemInit: function (timer) {
@@ -20,9 +21,9 @@ export const System = {
   },
 
   createUnit: function (positionX, positionY) {
-    const createdUnit = Object.create(Unit);
+    const createdUnit = Object.create(Workman);
 
-    createdUnit.unitInit(positionX, positionY, this.numberForUnitID, this);
+    createdUnit.workmanInit(positionX, positionY, this.numberForUnitID, this);
     this.units.push(createdUnit);
 
     this.numberForUnitID += 1;
@@ -96,6 +97,9 @@ export const System = {
 
   setRightClickObject: function (x, y) {
     const objectID = this.matrix[y][x];
+
+    if (objectID === 0) return;
+
     const objects = [...this.units, ...this.buildings, ...this.resources];
 
     objects.forEach(object => {
@@ -155,7 +159,7 @@ export const System = {
 
   selectOneUnit: function (selectedObjectID) {
     this.units.forEach(unit => {
-      if (unit.getUnitID() === selectedObjectID) {
+      if (unit.getID() === selectedObjectID) {
         unit.setIsSelected(true);
 
         this.selectedObjects = [unit];
@@ -169,7 +173,7 @@ export const System = {
 
   selectOneBuilding: function (selectedObjectID) {
     this.buildings.forEach(building => {
-      if (building.getBuildingID() === selectedObjectID) {
+      if (building.getID() === selectedObjectID) {
         building.setIsSelected(true);
 
         this.selectedObjects = [building];
@@ -183,7 +187,7 @@ export const System = {
 
   selectOneResource: function (selectedObjectID) {
     this.resources.forEach(resource => {
-      if (resource.getResourceID() === selectedObjectID) {
+      if (resource.getID() === selectedObjectID) {
         resource.setIsSelected(true);
 
         this.selectedObjects = [resource];

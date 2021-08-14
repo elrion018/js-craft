@@ -7,13 +7,8 @@ export const Unit = {
     this.positionY = positionY;
     this.targetX = null;
     this.targetY = null;
-    this.radius = 10;
-    this.speed = 1000;
     this.isSelected = false;
     this.isMoving = false;
-
-    // 메트릭스에 유닛 배치
-    this.setUnitInMatrix(positionX, positionY, this.radius, this.id);
   },
 
   updateStatus: function (diff) {
@@ -28,7 +23,7 @@ export const Unit = {
       positionY: this.positionY,
     };
   },
-  getUnitID: function () {
+  getID: function () {
     return this.id;
   },
 

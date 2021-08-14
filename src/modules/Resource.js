@@ -17,7 +17,7 @@ export const Resource = {
     );
   },
 
-  getResourceID: function () {
+  getID: function () {
     return this.id;
   },
 

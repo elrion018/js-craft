@@ -13,7 +13,7 @@ export const Building = {
     this.setBuildingInMatrix(positionX, positionY, this.size, this.id);
   },
 
-  getBuildingID: function () {
+  getID: function () {
     return this.id;
   },
 
