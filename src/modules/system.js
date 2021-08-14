@@ -1,10 +1,9 @@
 import { Unit } from './Unit.js';
 import { Building } from './Building.js';
 import { Resource } from './Resource.js';
-import { Workman } from './Workman.js';
 
 export const System = {
-  systemInit: function (timer) {
+  systemInit: function (timer, abstractFactory) {
     this.units = [];
     this.buildings = [];
     this.resources = [];
@@ -12,6 +11,7 @@ export const System = {
       Array.from({ length: window.innerWidth }, () => 0)
     );
     this.timer = timer;
+    this.abstractFactory = abstractFactory;
     this.selectedObjects = [];
     this.rightClickObject = {};
 
@@ -20,10 +20,17 @@ export const System = {
     this.numberForResourceID = 0;
   },
 
-  createUnit: function (positionX, positionY) {
-    const createdUnit = Object.create(Workman);
+  createUnit: function (positionX, positionY, type) {
+    const createdUnit = this.abstractFactory.createObject(type);
 
-    createdUnit.workmanInit(positionX, positionY, this.numberForUnitID, this);
+    if (createdUnit === null) return;
+
+    createdUnit[`${type.toLowerCase()}Init`](
+      positionX,
+      positionY,
+      this.numberForUnitID,
+      this
+    );
     this.units.push(createdUnit);
 
     this.numberForUnitID += 1;

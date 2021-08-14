@@ -1,6 +1,8 @@
+import { Workman } from './Workman.js';
+
 export const AbstractFactory = {
-  factoryInit: function () {
-    this.objects = {};
+  abstractFactoryInit: function () {
+    this.objects = { Workman };
   },
 
   addObject: function (type, object) {
