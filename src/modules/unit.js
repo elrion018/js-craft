@@ -39,7 +39,6 @@ export const Unit = {
 
   setTargetForMove: function (targetX, targetY) {
     this.isMoving = true;
-    this.isMining = false;
     this.startX = this.positionX;
     this.startY = this.positionY;
     this.targetX = targetX;
@@ -87,6 +86,7 @@ export const Unit = {
       this.targetY = this.startY;
       this.startX = tempX;
       this.startY = tempY;
+      console.log('call1');
     }
 
     // 채굴 중인데 속한 본부가 없다면
@@ -105,6 +105,8 @@ export const Unit = {
 
       this.targetX = searchedX;
       this.targetY = searchedY;
+
+      console.log('call2');
 
       return;
     }

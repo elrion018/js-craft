@@ -16,11 +16,22 @@ export const Workman = {
   setTargetForMining: function (targetResource, targetX, targetY) {
     this.isMining = true;
     this.isMoving = true;
+    this.targetHeadquarters = {};
     this.startX = this.positionX;
     this.startY = this.positionY;
     this.targetX = targetX;
     this.targetY = targetY;
     this.targetResource = targetResource;
+  },
+
+  setTargetForMoveToWorkman: function (targetX, targetY) {
+    this.isMoving = true;
+    this.isMining = false;
+    this.targetHeadquarters = {};
+    this.startX = this.positionX;
+    this.startY = this.positionY;
+    this.targetX = targetX;
+    this.targetY = targetY;
   },
 
   // 가장 가까운 본부(커맨더 센터 등)을 BFS를 통해 찾는 메서드

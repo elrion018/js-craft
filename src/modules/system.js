@@ -102,7 +102,7 @@ export const System = {
     this.matrix[y][x] = value;
   },
 
-  setRightClickObject: function (x, y) {
+  setRightClickedObject: function (x, y) {
     const objectID = this.matrix[y][x];
 
     if (objectID === 0) {
@@ -209,7 +209,10 @@ export const System = {
   },
 
   commandUnitToMove(unit, targetX, targetY) {
-    unit.setTargetForMove(targetX, targetY);
+    if (unit.subtype === 'workman') {
+      unit.setTargetForMoveToWorkman(targetX, targetY);
+    }
+    // unit.setTargetForMove(targetX, targetY);
   },
 
   commandUnitToMine(unit, targetX, targetY) {
@@ -217,20 +220,28 @@ export const System = {
   },
 
   commandUnit(unit, targetX, targetY) {
-    if (Object.keys(this.rightClickObject).length === 0)
+    if (Object.keys(this.rightClickObject).length === 0) {
       this.commandUnitToMove(unit, targetX, targetY);
 
-    if (this.rightClickObject.type === 'resource' && unit.subtype === 'workman')
+      return;
+    }
+
+    if (
+      this.rightClickObject.type === 'resource' &&
+      unit.subtype === 'workman'
+    ) {
       this.commandUnitToMine(unit, targetX, targetY);
 
-    if (this.rightClickObject.type === 'unit')
-      this.commandUnitToMove(unit, targetX, targetY);
+      return;
+    }
 
-    if (this.rightClickObject.type === 'building')
-      this.commandUnitToMove(unit, targetX, targetY);
+    if (this.rightClickObject.type === 'unit') {
+    }
+    if (this.rightClickObject.type === 'building') {
+    }
   },
 
-  commandUnits(targetX, targetY) {
+  commandObjects(targetX, targetY) {
     this.selectedObjects.forEach(object => {
       if (object.type === 'unit') {
         this.commandUnit(object, targetX, targetY);
