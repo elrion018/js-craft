@@ -39,6 +39,7 @@ export const Unit = {
 
   setTargetForMove: function (targetX, targetY) {
     this.isMoving = true;
+    this.isMining = false;
     this.startX = this.positionX;
     this.startY = this.positionY;
     this.targetX = targetX;
@@ -66,7 +67,7 @@ export const Unit = {
     )
       return;
 
-    // 이동할 위치에 다른 유닛이 이미 존재한다면
+    // 이동할 위치에 다른 유닛이 이미 존재하는 지 체크
     const unitExistCheckResult = this.checkObjectInMatrix(
       newPositionXWithMove,
       newPositionYWithMove,
@@ -101,6 +102,7 @@ export const Unit = {
     );
 
     const distanceBetweenTarget = this.getDistanceBetweenTarget();
+
     if (distanceBetweenTarget <= 1 && this.isMining) {
       const tempX = this.targetX;
       const tempY = this.targetY;

@@ -15,7 +15,6 @@ export const Workman = {
   setTargetForMining: function (targetResource, targetX, targetY) {
     this.isMining = true;
     this.isMoving = true;
-
     this.startX = this.positionX;
     this.startY = this.positionY;
     this.targetX = targetX;
