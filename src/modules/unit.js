@@ -78,11 +78,12 @@ export const Unit = {
     if (unitExistCheckResult && this.isMining) {
       const tempX = this.targetX;
       const tempY = this.targetY;
-
       this.targetX = this.startX;
       this.targetY = this.startY;
       this.startX = tempX;
       this.startY = tempY;
+
+      console.log(this.searchTargetHeadquarters(this.startX, this.startY));
 
       return;
     }
