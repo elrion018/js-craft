@@ -231,8 +231,6 @@ export const System = {
   },
 
   commandUnits(targetX, targetY) {
-    console.log(this.rightClickObject);
-
     this.selectedObjects.forEach(object => {
       if (object.type === 'unit') {
         this.commandUnit(object, targetX, targetY);

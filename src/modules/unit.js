@@ -75,15 +75,36 @@ export const Unit = {
       this.id
     );
 
-    if (unitExistCheckResult && this.isMining) {
+    // 채굴 중인데 속한 본부가 있다면
+    if (
+      unitExistCheckResult &&
+      this.isMining &&
+      Object.keys(this.targetHeadquarters).length !== 0
+    ) {
       const tempX = this.targetX;
       const tempY = this.targetY;
       this.targetX = this.startX;
       this.targetY = this.startY;
       this.startX = tempX;
       this.startY = tempY;
+    }
 
-      console.log(this.searchTargetHeadquarters(this.startX, this.startY));
+    // 채굴 중인데 속한 본부가 없다면
+    if (
+      unitExistCheckResult &&
+      this.isMining &&
+      Object.keys(this.targetHeadquarters).length === 0
+    ) {
+      this.startX = this.targetX;
+      this.startY = this.targetY;
+
+      const [searchedX, searchedY] = this.searchTargetHeadquarters(
+        this.startX,
+        this.startY
+      );
+
+      this.targetX = searchedX;
+      this.targetY = searchedY;
 
       return;
     }
