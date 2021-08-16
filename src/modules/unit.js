@@ -11,6 +11,8 @@ export const Unit = {
     this.targetY = null;
     this.isSelected = false;
     this.isMoving = false;
+    this.paths = [];
+    this.pathIndex = 0;
   },
 
   updateStatus: function (diff) {
@@ -55,6 +57,7 @@ export const Unit = {
     const newPositionXWithMove = this.getNewPositionXWithMove(
       calculatedDistanceX
     );
+
     const newPositionYWithMove = this.getNewPositionYWithMove(
       calculatedDistanceY
     );
@@ -86,7 +89,6 @@ export const Unit = {
       this.targetY = this.startY;
       this.startX = tempX;
       this.startY = tempY;
-      console.log('call1');
     }
 
     // 채굴 중인데 속한 본부가 없다면
@@ -98,15 +100,13 @@ export const Unit = {
       this.startX = this.targetX;
       this.startY = this.targetY;
 
-      const [searchedX, searchedY] = this.searchTargetHeadquarters(
+      const [searchedX, searchedY] = this.searchForMining(
         this.startX,
         this.startY
       );
 
       this.targetX = searchedX;
       this.targetY = searchedY;
-
-      console.log('call2');
 
       return;
     }

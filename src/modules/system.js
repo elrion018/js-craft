@@ -212,7 +212,6 @@ export const System = {
     if (unit.subtype === 'workman') {
       unit.setTargetForMoveToWorkman(targetX, targetY);
     }
-    // unit.setTargetForMove(targetX, targetY);
   },
 
   commandUnitToMine(unit, targetX, targetY) {
