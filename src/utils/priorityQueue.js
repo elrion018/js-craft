@@ -14,9 +14,7 @@ export const priorityQueue = {
   },
 
   isEmpty: function () {
-    if (this.heap.length) return false;
-
-    return true;
+    return this.heap.length <= 0;
   },
 };
 
