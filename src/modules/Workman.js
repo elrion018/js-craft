@@ -1,4 +1,5 @@
 import { Unit } from './Unit.js';
+import { getPaths } from '../utils/index.js';
 
 export const Workman = {
   workmanInit: function (positionX, positionY, id, gameSystem) {
@@ -32,6 +33,13 @@ export const Workman = {
     this.startY = this.positionY;
     this.targetX = targetX;
     this.targetY = targetY;
+
+    this.paths = this.searchForMoving(
+      this.startX,
+      this.startY,
+      this.targetX,
+      this.targetY
+    );
   },
 
   // 가장 가까운 본부(커맨더 센터 등)을 BFS를 통해 찾는 메서드
@@ -50,7 +58,7 @@ export const Workman = {
     const YLength = matrix.length;
     const XLength = matrix[0].length;
     const visited = Array.from({ length: YLength }, () =>
-      Array.from({ length: XLength }, () => [])
+      Array.from({ length: XLength }, () => 0)
     );
 
     // 시작 위치를 큐에 넣어 준다.
@@ -76,22 +84,24 @@ export const Workman = {
 
           if (
             (objectID === 0 || objectID === this.targetResource.id) &&
-            visited[ay][ax].length === 0
+            visited[ay][ax] === 0
           ) {
             visited[ay][ax] = visited[y][x];
             queue.push([ax, ay]);
+
+            continue;
           }
 
           if (
             objectID !== 0 &&
             objectID !== this.targetResource.id &&
             building &&
-            visited[ay][ax].length === 0
+            visited[ay][ax] === 0
           ) {
             visited[ay][ax] = visited[y][x];
             this.targetHeadquarters = building;
 
-            this.setPaths(visited, [[ax, ay]], ax, ay);
+            this.paths = getPaths(visited, [[ax, ay]], ax, ay);
 
             return true;
           }
@@ -100,17 +110,6 @@ export const Workman = {
     }
 
     return false;
-  },
-
-  setPaths: function (visited, tempPath, x, y) {
-    if (visited[y][x] !== 0) {
-      const [nextX, nextY] = visited[y][x];
-      tempPath.push([nextX, nextY]);
-
-      this.setPaths(visited, tempPath, nextX, nextY);
-    } else {
-      this.paths = tempPath.reverse();
-    }
   },
 
   mine: function (diff) {
@@ -126,8 +125,8 @@ export const Workman = {
           : this.paths.length - 1;
     }
 
-    newPositionXWithMove = this.paths[this.pathIndex][0];
-    newPositionYWithMove = this.paths[this.pathIndex][1];
+    const newPositionXWithMove = this.paths[this.pathIndex][0];
+    const newPositionYWithMove = this.paths[this.pathIndex][1];
 
     // 이전 위치와 동일하다면
     if (
@@ -137,7 +136,7 @@ export const Workman = {
       return;
 
     // 이동할 위치에 다른 유닛이 이미 존재하는 지 체크
-    const unitExistCheckResult = this.checkObjectInMatrix(
+    const unitExistCheckResult = this.getObjectInPosition(
       newPositionXWithMove,
       newPositionYWithMove,
       this.radius,

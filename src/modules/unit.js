@@ -1,3 +1,5 @@
+import { getPaths } from '../utils/index.js';
+
 export const Unit = {
   unitInit: function (positionX, positionY, id, gameSystem) {
     this.gameSystem = gameSystem;
@@ -16,7 +18,7 @@ export const Unit = {
   },
 
   updateStatus: function (diff) {
-    if (this.isMoving) {
+    if (this.isMoving && this.paths.length) {
       this.move(diff);
     }
   },
@@ -27,6 +29,7 @@ export const Unit = {
       positionY: this.positionY,
     };
   },
+
   getID: function () {
     return this.id;
   },
@@ -47,77 +50,99 @@ export const Unit = {
     this.targetY = targetY;
   },
 
+  // 목표 지점에 도달하기 위한 최단거리 경로를 구하는 메소드
+  searchForMoving: function (startX, startY, targetX, targetY) {
+    const matrix = this.gameSystem.getMatrix();
+
+    // 방문한 위치를 저장하가 위한 visited 배열 생성
+    const YLength = matrix.length;
+    const XLength = matrix[0].length;
+    const visited = Array.from({ length: YLength }, () =>
+      Array.from({ length: XLength }, () => 0)
+    );
+
+    // 시작 위치를 큐에 넣어 준다.
+    const queue = [[startX, startY]];
+
+    // 시작 위치는 방문 처리
+    visited[startY][startX] = 999;
+
+    // 방향 이동 처리를 위한 배열 선언
+    const dx = [1, -1, 0, 0];
+    const dy = [0, 0, 1, -1];
+
+    while (queue.length) {
+      let [x, y] = queue.shift();
+
+      for (let i = 0; i < 4; i++) {
+        let ax = x + dx[i];
+        let ay = y + dy[i];
+
+        if (ax === targetX && ay === targetY && visited[ay][ax] === 0) {
+          visited[ay][ax] = [x, y];
+
+          return getPaths(visited, [[ax, ay]], ax, ay);
+        }
+
+        if (ax >= 0 && ax < XLength && ay >= 0 && ay < YLength) {
+          let objectID = matrix[ay][ax];
+
+          if (
+            (objectID === 0 || objectID === this.id) &&
+            visited[ay][ax] === 0
+          ) {
+            visited[ay][ax] = [x, y];
+
+            queue.push([ax, ay]);
+          }
+        }
+      }
+    }
+
+    return [];
+  },
+
   move: function (diff) {
-    const angle = this.getAngleBetweenTarget();
-    const prevPositionX = this.positionX;
-    const prevPositionY = this.positionY;
-    const calculatedDistanceX = Math.ceil(Math.cos(angle) * this.speed * diff);
-    const calculatedDistanceY = Math.ceil(Math.sin(angle) * this.speed * diff);
+    // paths 배열 내에서 index가 바뀌게끔 컨트롤
+    if (this.pathIndex >= 0 && this.pathIndex <= this.paths.length - 1) {
+      const distance = Math.floor(1 * this.speed * diff);
+      this.pathIndex =
+        this.pathIndex + distance < this.paths.length - 1
+          ? this.pathIndex + distance
+          : this.paths.length - 1;
+    }
 
-    const newPositionXWithMove = this.getNewPositionXWithMove(
-      calculatedDistanceX
-    );
-
-    const newPositionYWithMove = this.getNewPositionYWithMove(
-      calculatedDistanceY
-    );
+    const newPositionXWithMove = this.paths[this.pathIndex][0];
+    const newPositionYWithMove = this.paths[this.pathIndex][1];
 
     // 이전 위치와 완전 동일하다면
     if (
-      newPositionXWithMove === prevPositionX &&
-      newPositionYWithMove === prevPositionY
+      newPositionXWithMove === this.positionX &&
+      newPositionYWithMove === this.positionY
     )
       return;
 
-    // 이동할 위치에 다른 유닛이 이미 존재하는 지 체크
-    const unitExistCheckResult = this.checkObjectInMatrix(
+    // 이동할 위치에 다른 오브젝트가 이미 존재하는 지 확인
+    const objectInPosition = this.getObjectInPosition(
       newPositionXWithMove,
       newPositionYWithMove,
       this.radius,
       this.id
     );
 
-    // 채굴 중인데 속한 본부가 있다면
-    if (
-      unitExistCheckResult &&
-      this.isMining &&
-      Object.keys(this.targetHeadquarters).length !== 0
-    ) {
-      const tempX = this.targetX;
-      const tempY = this.targetY;
-      this.targetX = this.startX;
-      this.targetY = this.startY;
-      this.startX = tempX;
-      this.startY = tempY;
-    }
-
-    // 채굴 중인데 속한 본부가 없다면
-    if (
-      unitExistCheckResult &&
-      this.isMining &&
-      Object.keys(this.targetHeadquarters).length === 0
-    ) {
-      this.startX = this.targetX;
-      this.startY = this.targetY;
-
-      const [searchedX, searchedY] = this.searchForMining(
-        this.startX,
-        this.startY
+    // 존재한다면
+    if (objectInPosition) {
+      // 충돌이 일어난 것이므로 경로를 재탐색 함
+      this.searchForMoving(
+        this.positionX,
+        this.positionY,
+        this.targetX,
+        this.targetY
       );
-
-      this.targetX = searchedX;
-      this.targetY = searchedY;
-
-      return;
     }
 
-    if (unitExistCheckResult) return;
-
-    this.setUnitInMatrix(prevPositionX, prevPositionY, this.radius, 0);
-
-    this.positionX = newPositionXWithMove;
-    this.positionY = newPositionYWithMove;
-
+    // 위치 갱신
+    this.setUnitInMatrix(this.positionX, this.positionY, this.radius, 0);
     this.setUnitInMatrix(
       newPositionXWithMove,
       newPositionYWithMove,
@@ -125,21 +150,10 @@ export const Unit = {
       this.id
     );
 
-    const distanceBetweenTarget = this.getDistanceBetweenTarget();
+    this.positionX = newPositionXWithMove;
+    this.positionY = newPositionYWithMove;
 
-    if (distanceBetweenTarget <= 1 && this.isMining) {
-      const tempX = this.targetX;
-      const tempY = this.targetY;
-
-      this.targetX = this.startX;
-      this.targetY = this.startY;
-      this.startX = tempX;
-      this.startY = tempY;
-
-      return;
-    }
-
-    if (distanceBetweenTarget <= 1) {
+    if (this.pathIndex === this.paths.length - 1) {
       this.isMoving = false;
     }
   },
@@ -152,7 +166,8 @@ export const Unit = {
     }
   },
 
-  checkObjectInMatrix: function (positionX, positionY, radius, id) {
+  // 해당 위치에
+  getObjectInPosition: function (positionX, positionY, radius, id) {
     const matrix = this.gameSystem.getMatrix();
 
     for (let y = positionY - radius; y < positionY + radius; y++) {
