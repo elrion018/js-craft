@@ -1,5 +1,5 @@
 import { Unit } from './Unit.js';
-import { getPaths } from '../utils/index.js';
+import { getPaths } from '../utils/getPaths';
 
 export const Workman = {
   workmanInit: function (positionX, positionY, id, gameSystem) {

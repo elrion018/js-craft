@@ -1,4 +1,5 @@
-import { getPaths, shuffle } from '../utils/index.js';
+import { shuffle } from '../utils/shuffle.js';
+import { getPaths } from '../utils/getPaths.js';
 
 export const Unit = {
   unitInit: function (positionX, positionY, id, gameSystem) {
@@ -72,11 +73,14 @@ export const Unit = {
     const defaultDX = [-1, 1, -1, 1, 1, -1, 0, 0]; // 북서 북동 남서 남동 동 서 남 북
     const defaultDY = [-1, -1, 1, 1, 0, 0, 1, -1];
 
+    const dx = [1, -1, 0, 0];
+    const dy = [0, 0, 1, -1];
+
     while (queue.length) {
       let [x, y] = queue.shift();
 
-      let dx = shuffle(defaultDX);
-      let dy = shuffle(defaultDY);
+      // let dx = shuffle(defaultDX);
+      // let dy = shuffle(defaultDY);
 
       for (let i = 0; i < dx.length; i++) {
         let ax = x + dx[i];
