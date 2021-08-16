@@ -68,13 +68,13 @@ export const Unit = {
     visited[startY][startX] = 999;
 
     // 방향 이동 처리를 위한 배열 선언
-    const dx = [1, -1, 0, 0];
-    const dy = [0, 0, 1, -1];
+    const dx = [-1, 1, -1, 1, 1, -1, 0, 0]; // 북서 북동 남서 남동 동 서 남 북
+    const dy = [-1, -1, 1, 1, 0, 0, 1, -1];
 
     while (queue.length) {
       let [x, y] = queue.shift();
 
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < dx.length; i++) {
         let ax = x + dx[i];
         let ay = y + dy[i];
 
