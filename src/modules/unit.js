@@ -1,4 +1,4 @@
-import { getPaths } from '../utils/index.js';
+import { getPaths, shuffle } from '../utils/index.js';
 
 export const Unit = {
   unitInit: function (positionX, positionY, id, gameSystem) {
@@ -68,11 +68,15 @@ export const Unit = {
     visited[startY][startX] = 999;
 
     // 방향 이동 처리를 위한 배열 선언
-    const dx = [-1, 1, -1, 1, 1, -1, 0, 0]; // 북서 북동 남서 남동 동 서 남 북
-    const dy = [-1, -1, 1, 1, 0, 0, 1, -1];
+
+    const defaultDX = [-1, 1, -1, 1, 1, -1, 0, 0]; // 북서 북동 남서 남동 동 서 남 북
+    const defaultDY = [-1, -1, 1, 1, 0, 0, 1, -1];
 
     while (queue.length) {
       let [x, y] = queue.shift();
+
+      let dx = shuffle(defaultDX);
+      let dy = shuffle(defaultDY);
 
       for (let i = 0; i < dx.length; i++) {
         let ax = x + dx[i];
