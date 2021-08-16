@@ -15,8 +15,8 @@ export const minHeap = {
     return Math.floor((childIndex - 1) / 2);
   },
 
-  insert: function (cost, value) {
-    const node = { cost, value };
+  insert: function (priority, value) {
+    const node = { priority, value };
 
     this.heap.push(node);
     this.heapifyUp();
@@ -29,7 +29,7 @@ export const minHeap = {
     while (index > 0) {
       const parentIndex = this.getParentIndex(index);
 
-      if (this.heap[parentIndex].cost > lastInsertedNode.cost) {
+      if (this.heap[parentIndex].priority > lastInsertedNode.priority) {
         this.heap[index] = this.heap[parentIndex];
         index = parentIndex;
       } else break;
@@ -63,11 +63,11 @@ export const minHeap = {
 
       const smallerChildIndex =
         rightChildIndex < length &&
-        this.heap[rightChildIndex].cost < this.heap[leftChildIndex].cost
+        this.heap[rightChildIndex].priority < this.heap[leftChildIndex].priority
           ? rightChildIndex
           : leftChildIndex;
 
-      if (this.heap[smallerChildIndex].cost <= rootNode.cost) {
+      if (this.heap[smallerChildIndex].priority <= rootNode.priority) {
         this.heap[index] = this.heap[smallerChildIndex];
         index = smallerChildIndex;
       } else break;
