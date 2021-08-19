@@ -55,64 +55,6 @@ export const Unit = {
   // 목표 지점에 도달하기 위한 최단거리 경로를 구하는 메소드
   searchForMoving: function (startX, startY, targetX, targetY) {
     const matrix = this.gameSystem.getMatrix();
-
-    // 방문한 위치를 저장하가 위한 visited 배열 생성
-    const YLength = matrix.length;
-    const XLength = matrix[0].length;
-    const visited = Array.from({ length: YLength }, () =>
-      Array.from({ length: XLength }, () => 0)
-    );
-
-    // 시작 위치를 큐에 넣어 준다.
-    const queue = [[startX, startY]];
-
-    // 시작 위치는 방문 처리
-    visited[startY][startX] = 999;
-
-    // 방향 이동 처리를 위한 배열 선언
-
-    // const defaultDX = [-1, 1, -1, 1, 1, -1, 0, 0]; // 북서 북동 남서 남동 동 서 남 북
-    // const defaultDY = [-1, -1, 1, 1, 0, 0, 1, -1];
-
-    const dx = [1, -1, 0, 0];
-    const dy = [0, 0, 1, -1];
-
-    while (queue.length) {
-      let [x, y] = queue.shift();
-
-      // let dx = shuffle(defaultDX);
-      // let dy = shuffle(defaultDY);
-
-      for (let i = 0; i < dx.length; i++) {
-        let ax = x + dx[i];
-        let ay = y + dy[i];
-
-        if (ax === targetX && ay === targetY && visited[ay][ax] === 0) {
-          visited[ay][ax] = [x, y];
-
-          return getPaths(visited, [[ax, ay]], ax, ay);
-        }
-
-        if (ax >= 0 && ax < XLength && ay >= 0 && ay < YLength) {
-          let objectID = matrix[ay][ax];
-
-          if (
-            (objectID === 0 || objectID === this.id) &&
-            visited[ay][ax] === 0
-          ) {
-            visited[ay][ax] = [x, y];
-
-            queue.push([ax, ay]);
-          }
-        }
-      }
-    }
-
-    return [];
-  },
-
-  test: function (startX, startY, targetX, targetY) {
-    const matrix = this.gameSystem.getMatrix();
     const YLength = matrix.length;
     const XLength = matrix[0].length;
 
@@ -145,7 +87,7 @@ export const Unit = {
       }
     }
 
-    // 다익스트라 시작
+    // 에이스타 알고리즘 시작
     // 초기화
 
     const inf = Number.MAX_SAFE_INTEGER;
@@ -166,27 +108,40 @@ export const Unit = {
 
       if (distances[nowNode] !== nowDistance) continue;
 
+      let nowY = Math.floor(nowNode / XLength);
+      let nowX = nowNode % XLength;
+
+      if (nowY === targetY && nowX === targetX) {
+        console.log('call');
+        break;
+      }
+
+      let euclideanDistance = Math.sqrt(
+        Math.pow(targetX - nowX, 2) + Math.pow(targetY - nowY, 2)
+      );
+
       for (let i = 0; i < adjList[nowNode].length; i++) {
-        let calculatedDistance = distances[nowNode] + adjList[nowNode][i][0];
         let nextNode = adjList[nowNode][i][1];
         let nextY = Math.floor(nextNode / XLength);
         let nextX = nextNode % XLength;
 
-        if (calculatedDistance < distances[nextNode]) {
+        // 장애물이 있다면 피하도록 처리
+        if (matrix[nextY][nextX] !== 0 && matrix[nextY][nextX] !== this.id)
+          continue;
+
+        let weight = adjList[nowNode][i][0];
+
+        let calculatedDistance =
+          distances[nowNode] + weight + euclideanDistance;
+
+        if (distances[nextNode] > calculatedDistance) {
           distances[nextNode] = calculatedDistance;
-          visited[Math.floor(nextNode / XLength)][nextNode % XLength] = [
+          visited[nextY][nextX] = [
             nowNode % XLength,
             Math.floor(nowNode / XLength),
           ];
 
-          if (
-            Math.floor(nextNode / XLength) === targetY &&
-            nextNode % XLength === targetX
-          ) {
-            return getPaths(visited, [[targetX, targetY]], targetX, targetY);
-          }
-
-          pq.enqueue(distances[adjList[nowNode][i][1]], nextNode);
+          pq.enqueue(distances[nextNode], nextNode);
         }
       }
     }

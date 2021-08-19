@@ -34,7 +34,7 @@ export const Workman = {
     this.targetX = targetX;
     this.targetY = targetY;
 
-    this.paths = this.test(
+    this.paths = this.searchForMoving(
       this.startX,
       this.startY,
       this.targetX,
