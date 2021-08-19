@@ -1,5 +1,5 @@
 import { Unit } from './Unit.js';
-import { getPaths } from '../utils/getPaths';
+import { getPaths } from '../utils/getPaths.js';
 
 export const Workman = {
   workmanInit: function (positionX, positionY, id, gameSystem) {
@@ -34,7 +34,7 @@ export const Workman = {
     this.targetX = targetX;
     this.targetY = targetY;
 
-    this.paths = this.searchForMoving(
+    this.paths = this.test(
       this.startX,
       this.startY,
       this.targetX,

@@ -135,7 +135,7 @@ export const Unit = {
           let ay = y + dy[k];
 
           if (ax >= 0 && ax < XLength && ay >= 0 && ay < YLength) {
-            if (Math.abs(dx) === Math.abs(dy)) {
+            if (Math.abs(dx[k]) === Math.abs(dy[k])) {
               adjList[count].push([1.4, ay * XLength + ax]);
             } else {
               adjList[count].push([1, ay * XLength + ax]);
@@ -147,12 +147,19 @@ export const Unit = {
 
     // 다익스트라 시작
     // 초기화
+
     const inf = Number.MAX_SAFE_INTEGER;
     const pq = Object.create(priorityQueue);
+    pq.priorityQueueInit();
     const distances = Array.from({ length: XLength * YLength }, () => inf);
-    distances[0] = 0;
+    const visited = Array.from({ length: YLength }, () =>
+      Array.from({ length: XLength }, () => 0)
+    );
 
-    pq.enqueue(distances[0], 0);
+    distances[startY * XLength + startX] = 0;
+    visited[startY][startX] = 999;
+
+    pq.enqueue(distances[startY * XLength + startX], startY * XLength + startX);
 
     while (!pq.isEmpty()) {
       let { priority: nowDistance, value: nowNode } = pq.dequeue();
@@ -161,13 +168,30 @@ export const Unit = {
 
       for (let i = 0; i < adjList[nowNode].length; i++) {
         let calculatedDistance = distances[nowNode] + adjList[nowNode][i][0];
+        let nextNode = adjList[nowNode][i][1];
+        let nextY = Math.floor(nextNode / XLength);
+        let nextX = nextNode % XLength;
 
-        if (calculatedDistance < distances[adjList[nowNode][i][1]]) {
-          distances[adjList[nowNode][i][1]] = calculatedDistance;
-          pq.enqueue(distances[adjList[nowNode][i][1]], adjList[nowNode][i][1]);
+        if (calculatedDistance < distances[nextNode]) {
+          distances[nextNode] = calculatedDistance;
+          visited[Math.floor(nextNode / XLength)][nextNode % XLength] = [
+            nowNode % XLength,
+            Math.floor(nowNode / XLength),
+          ];
+
+          if (
+            Math.floor(nextNode / XLength) === targetY &&
+            nextNode % XLength === targetX
+          ) {
+            return getPaths(visited, [[targetX, targetY]], targetX, targetY);
+          }
+
+          pq.enqueue(distances[adjList[nowNode][i][1]], nextNode);
         }
       }
     }
+
+    return getPaths(visited, [[targetX, targetY]], targetX, targetY);
   },
 
   move: function (diff) {
