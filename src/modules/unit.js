@@ -1,6 +1,4 @@
-import { shuffle } from '../utils/shuffle.js';
-import { getPaths } from '../utils/getPaths.js';
-import { priorityQueue } from '../utils/priorityQueue.js';
+import { aStar } from '../utils/aStar.js';
 
 export const Unit = {
   unitInit: function (positionX, positionY, id, gameSystem) {
@@ -53,100 +51,15 @@ export const Unit = {
   },
 
   // 목표 지점에 도달하기 위한 최단거리 경로를 구하는 메소드
-  searchForMoving: function (startX, startY, targetX, targetY) {
-    const matrix = this.gameSystem.getMatrix();
-    const YLength = matrix.length;
-    const XLength = matrix[0].length;
-
-    // 방향 설정을 위한 dx, dy 배열
-    const dx = [1, -1, 0, 0, -1, 1, -1, 1]; // 동 서 남 북 북서 북동 남서 남동
-    const dy = [0, 0, 1, -1, -1, -1, 1, 1];
-
-    // adjacent list 생성
-    const adjList = Array.from({ length: XLength * YLength }, () => []);
-
-    let count = -1;
-
-    // adjacent list 채우기
-    for (let y = 0; y < YLength; y++) {
-      for (let x = 0; x < XLength; x++) {
-        count += 1;
-
-        for (let k = 0; k < dx.length; k++) {
-          let ax = x + dx[k];
-          let ay = y + dy[k];
-
-          if (ax >= 0 && ax < XLength && ay >= 0 && ay < YLength) {
-            if (Math.abs(dx[k]) === Math.abs(dy[k])) {
-              adjList[count].push([1.4, ay * XLength + ax]);
-            } else {
-              adjList[count].push([1, ay * XLength + ax]);
-            }
-          }
-        }
-      }
-    }
-
-    // 에이스타 알고리즘 시작
-    // 초기화
-
-    const inf = Number.MAX_SAFE_INTEGER;
-    const pq = Object.create(priorityQueue);
-    pq.priorityQueueInit();
-    const distances = Array.from({ length: XLength * YLength }, () => inf);
-    const visited = Array.from({ length: YLength }, () =>
-      Array.from({ length: XLength }, () => 0)
-    );
-
-    distances[startY * XLength + startX] = 0;
-    visited[startY][startX] = 999;
-
-    pq.enqueue(distances[startY * XLength + startX], startY * XLength + startX);
-
-    while (!pq.isEmpty()) {
-      let { priority: nowDistance, value: nowNode } = pq.dequeue();
-
-      if (distances[nowNode] !== nowDistance) continue;
-
-      let nowY = Math.floor(nowNode / XLength);
-      let nowX = nowNode % XLength;
-
-      if (nowY === targetY && nowX === targetX) {
-        console.log('call');
-        break;
-      }
-
-      let euclideanDistance = Math.sqrt(
-        Math.pow(targetX - nowX, 2) + Math.pow(targetY - nowY, 2)
-      );
-
-      for (let i = 0; i < adjList[nowNode].length; i++) {
-        let nextNode = adjList[nowNode][i][1];
-        let nextY = Math.floor(nextNode / XLength);
-        let nextX = nextNode % XLength;
-
-        // 장애물이 있다면 피하도록 처리
-        if (matrix[nextY][nextX] !== 0 && matrix[nextY][nextX] !== this.id)
-          continue;
-
-        let weight = adjList[nowNode][i][0];
-
-        let calculatedDistance =
-          distances[nowNode] + weight + euclideanDistance;
-
-        if (distances[nextNode] > calculatedDistance) {
-          distances[nextNode] = calculatedDistance;
-          visited[nextY][nextX] = [
-            nowNode % XLength,
-            Math.floor(nowNode / XLength),
-          ];
-
-          pq.enqueue(distances[nextNode], nextNode);
-        }
-      }
-    }
-
-    return getPaths(visited, [[targetX, targetY]], targetX, targetY);
+  searchPathsForMoving: function (startX, startY, targetX, targetY) {
+    return aStar({
+      matrix: this.gameSystem.getMatrix(),
+      startX,
+      startY,
+      targetX,
+      targetY,
+      unitID: this.id,
+    });
   },
 
   move: function (diff) {
@@ -180,7 +93,7 @@ export const Unit = {
     // 존재한다면
     if (objectInPosition) {
       // 충돌이 일어난 것이므로 경로를 재탐색 함
-      this.searchForMoving(
+      this.searchPathsForMoving(
         this.positionX,
         this.positionY,
         this.targetX,
