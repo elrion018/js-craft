@@ -10,6 +10,9 @@ export const aStar = function ({
   targetY,
   unit,
 }) {
+  // 타겟 조정
+  ({ targetX, targetY } = adjustTarget({ targetX, targetY, matrix, unit }));
+
   const YLength = matrix.length;
   const XLength = matrix[0].length;
 
@@ -56,7 +59,7 @@ export const aStar = function ({
       let nextX = nextNode % XLength;
 
       // 장애물이 있다면 피하도록 처리
-      if (checkExistingObject(matrix, nextX, nextY, unit)) continue;
+      if (checkExistingObject({ nextX, nextY, matrix, unit })) continue;
 
       let weight = adjList[nowNode][i][0];
 
@@ -121,7 +124,7 @@ const initDistances = function (XLength, YLength) {
   return Array.from({ length: XLength * YLength }, () => inf);
 };
 
-const checkExistingObject = function (matrix, nextX, nextY, unit) {
+const checkExistingObject = function ({ nextX, nextY, matrix, unit }) {
   if (
     (matrix[nextY + unit.radius][nextX] !== 0 &&
       matrix[nextY + unit.radius][nextX] !== unit.id) ||
@@ -143,4 +146,67 @@ const checkExistingObject = function (matrix, nextX, nextY, unit) {
     return true;
 
   return false;
+};
+
+const adjustTarget = function ({ targetX, targetY, matrix, unit }) {
+  if (
+    matrix[targetY + unit.radius][targetX] !== 0 &&
+    matrix[targetY + unit.radius][targetX] !== unit.id
+  )
+    targetY -= unit.radius;
+
+  if (
+    matrix[targetY - unit.radius][targetX] !== 0 &&
+    matrix[targetY - unit.radius][targetX] !== unit.id
+  )
+    targetY += unit.radius;
+
+  if (
+    matrix[targetY][targetX + unit.radius] !== 0 &&
+    matrix[targetY][targetX + unit.radius] !== unit.id
+  )
+    targetX -= unit.radius;
+
+  if (
+    matrix[targetY][targetX - unit.radius] !== 0 &&
+    matrix[targetY][targetX - unit.radius] !== unit.id
+  )
+    targetX += unit.radius;
+
+  if (
+    matrix[targetY + unit.radius][targetX + unit.radius] !== 0 &&
+    matrix[targetY + unit.radius][targetX + unit.radius] !== unit.id
+  ) {
+    targetX -= unit.radius;
+    targetY -= unit.radius;
+  }
+
+  if (
+    matrix[targetY + unit.radius][targetX - unit.radius] !== 0 &&
+    matrix[targetY + unit.radius][targetX - unit.radius] !== unit.id
+  ) {
+    targetX += unit.radius;
+    targetY -= unit.radius;
+  }
+
+  if (
+    matrix[targetY - unit.radius][targetX + unit.radius] !== 0 &&
+    matrix[targetY - unit.radius][targetX + unit.radius] !== unit.id
+  ) {
+    targetX -= unit.radius;
+    targetY += unit.radius;
+  }
+
+  if (
+    matrix[targetY - unit.radius][targetX - unit.radius] !== 0 &&
+    matrix[targetY - unit.radius][targetX - unit.radius] !== unit.id
+  ) {
+    targetX += unit.radius;
+    targetY += unit.radius;
+  }
+
+  return {
+    targetX,
+    targetY,
+  };
 };
