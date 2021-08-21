@@ -58,7 +58,7 @@ export const Unit = {
       startY,
       targetX,
       targetY,
-      unitID: this.id,
+      unit: this,
     });
   },
 

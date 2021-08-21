@@ -8,7 +8,7 @@ export const aStar = function ({
   startY,
   targetX,
   targetY,
-  unitID,
+  unit,
 }) {
   const YLength = matrix.length;
   const XLength = matrix[0].length;
@@ -56,8 +56,7 @@ export const aStar = function ({
       let nextX = nextNode % XLength;
 
       // 장애물이 있다면 피하도록 처리
-      if (matrix[nextY][nextX] !== 0 && matrix[nextY][nextX] !== unitID)
-        continue;
+      if (checkExistingObject(matrix, nextX, nextY, unit)) continue;
 
       let weight = adjList[nowNode][i][0];
 
@@ -120,4 +119,28 @@ const initDistances = function (XLength, YLength) {
   const inf = Number.MAX_SAFE_INTEGER;
 
   return Array.from({ length: XLength * YLength }, () => inf);
+};
+
+const checkExistingObject = function (matrix, nextX, nextY, unit) {
+  if (
+    (matrix[nextY + unit.radius][nextX] !== 0 &&
+      matrix[nextY + unit.radius][nextX] !== unit.id) ||
+    (matrix[nextY - unit.radius][nextX] !== 0 &&
+      matrix[nextY - unit.radius][nextX] !== unit.id) ||
+    (matrix[nextY][nextX + unit.radius] !== 0 &&
+      matrix[nextY][nextX + unit.radius] !== unit.id) ||
+    (matrix[nextY][nextX - unit.radius] !== 0 &&
+      matrix[nextY][nextX - unit.radius] !== unit.id) ||
+    (matrix[nextY + unit.radius][nextX + unit.radius] !== 0 &&
+      matrix[nextY + unit.radius][nextX + unit.radius] !== unit.id) ||
+    (matrix[nextY + unit.radius][nextX - unit.radius] !== 0 &&
+      matrix[nextY + unit.radius][nextX - unit.radius] !== unit.id) ||
+    (matrix[nextY - unit.radius][nextX + unit.radius] !== 0 &&
+      matrix[nextY - unit.radius][nextX + unit.radius] !== unit.id) ||
+    (matrix[nextY - unit.radius][nextX - unit.radius] !== 0 &&
+      matrix[nextY - unit.radius][nextX - unit.radius] !== unit.id)
+  )
+    return true;
+
+  return false;
 };
