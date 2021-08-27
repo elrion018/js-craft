@@ -125,22 +125,37 @@ const initDistances = function (XLength, YLength) {
 };
 
 const checkExistingObject = function ({ nextX, nextY, matrix, unit }) {
+  const YLength = matrix.length;
+  const XLength = matrix[0].length;
+
   if (
-    (matrix[nextY + unit.radius][nextX] !== 0 &&
+    (nextY + unit.radius < YLength &&
+      matrix[nextY + unit.radius][nextX] !== 0 &&
       matrix[nextY + unit.radius][nextX] !== unit.id) ||
-    (matrix[nextY - unit.radius][nextX] !== 0 &&
+    (nextY - unit.radius >= 0 &&
+      matrix[nextY - unit.radius][nextX] !== 0 &&
       matrix[nextY - unit.radius][nextX] !== unit.id) ||
-    (matrix[nextY][nextX + unit.radius] !== 0 &&
+    (nextX + unit.radius < XLength &&
+      matrix[nextY][nextX + unit.radius] !== 0 &&
       matrix[nextY][nextX + unit.radius] !== unit.id) ||
-    (matrix[nextY][nextX - unit.radius] !== 0 &&
+    (nextX - unit.radius >= 0 &&
+      matrix[nextY][nextX - unit.radius] !== 0 &&
       matrix[nextY][nextX - unit.radius] !== unit.id) ||
-    (matrix[nextY + unit.radius][nextX + unit.radius] !== 0 &&
+    (nextY + unit.radius < YLength &&
+      nextX + unit.radius < XLength &&
+      matrix[nextY + unit.radius][nextX + unit.radius] !== 0 &&
       matrix[nextY + unit.radius][nextX + unit.radius] !== unit.id) ||
-    (matrix[nextY + unit.radius][nextX - unit.radius] !== 0 &&
+    (nextY + unit.radius < YLength &&
+      nextX - unit.radius >= 0 &&
+      matrix[nextY + unit.radius][nextX - unit.radius] !== 0 &&
       matrix[nextY + unit.radius][nextX - unit.radius] !== unit.id) ||
-    (matrix[nextY - unit.radius][nextX + unit.radius] !== 0 &&
+    (nextY - unit.radius >= 0 &&
+      nextX + unit.radius < XLength &&
+      matrix[nextY - unit.radius][nextX + unit.radius] !== 0 &&
       matrix[nextY - unit.radius][nextX + unit.radius] !== unit.id) ||
-    (matrix[nextY - unit.radius][nextX - unit.radius] !== 0 &&
+    (nextY - unit.radius >= 0 &&
+      nextX - unit.radius >= 0 &&
+      matrix[nextY - unit.radius][nextX - unit.radius] !== 0 &&
       matrix[nextY - unit.radius][nextX - unit.radius] !== unit.id)
   )
     return true;

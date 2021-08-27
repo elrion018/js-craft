@@ -114,7 +114,10 @@ export const Unit = {
     this.positionY = newPositionYWithMove;
 
     if (this.pathIndex === this.paths.length - 1) {
-      this.isMoving = false;
+      console.log('call');
+      this.paths = []; // 경로 초기화
+      this.pathIndex = 0; // 경로 인덱스 초기화
+      this.isMoving = false; // moving 상태 해제
     }
   },
 
