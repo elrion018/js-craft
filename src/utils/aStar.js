@@ -33,6 +33,9 @@ export const aStar = function ({
   const pq = Object.create(priorityQueue);
   pq.priorityQueueInit();
 
+  const targetID =
+    matrix[targetY][targetX] !== 0 ? matrix[targetY][targetX] : undefined;
+
   // 시작점 처리하고 우선순위 큐에 넣기
   distances[startY * XLength + startX] = 0;
   visited[startY][startX] = 999;
@@ -49,7 +52,13 @@ export const aStar = function ({
     let nowY = Math.floor(nowNode / XLength);
     let nowX = nowNode % XLength;
 
-    if (nowY === targetY && nowX === targetX) break;
+    if (nowY === targetY && nowX === targetX) {
+      return getPaths(visited, [[targetX, targetY]], targetX, targetY);
+    }
+
+    if (targetID && matrix[nowY][nowX] === targetID) {
+      return getPaths(visited, [[nowX, nowY]], nowX, nowY);
+    }
 
     let euclideanDistance = Math.abs(targetX - nowX) + Math.abs(targetY - nowY);
 
@@ -59,7 +68,17 @@ export const aStar = function ({
       let nextX = nextNode % XLength;
 
       // 장애물이 있다면 피하도록 처리
-      if (checkExistingObject({ nextX, nextY, matrix, unit })) continue;
+      if (
+        checkExistingObject({
+          nextX,
+          nextY,
+          matrix,
+          unit,
+          targetID,
+        })
+      ) {
+        continue;
+      }
 
       let weight = adjList[nowNode][i][0];
 
@@ -76,8 +95,6 @@ export const aStar = function ({
       }
     }
   }
-
-  return getPaths(visited, [[targetX, targetY]], targetX, targetY);
 };
 
 // adjacent list 를 초기화하는 함수
@@ -118,45 +135,70 @@ const initVisited = function (XLength, YLength) {
   );
 };
 
+/**
+ * distance 배열을 초기화하는 함수
+ * @param {*} XLength
+ * @param {*} YLength
+ * @returns
+ */
 const initDistances = function (XLength, YLength) {
   const inf = Number.MAX_SAFE_INTEGER;
 
   return Array.from({ length: XLength * YLength }, () => inf);
 };
 
-const checkExistingObject = function ({ nextX, nextY, matrix, unit }) {
+/**
+ * 경로 중에 장애물이 있는지 체크하는 함수
+ * @param {object}
+ * @returns
+ */
+const checkExistingObject = function ({
+  nextX,
+  nextY,
+  matrix,
+  unit,
+  targetID,
+}) {
   const YLength = matrix.length;
   const XLength = matrix[0].length;
 
   if (
     (nextY + unit.radius < YLength &&
       matrix[nextY + unit.radius][nextX] !== 0 &&
-      matrix[nextY + unit.radius][nextX] !== unit.id) ||
+      matrix[nextY + unit.radius][nextX] !== unit.id &&
+      (matrix[nextY + unit.radius][nextX] !== unit.id) !== targetID) ||
     (nextY - unit.radius >= 0 &&
       matrix[nextY - unit.radius][nextX] !== 0 &&
-      matrix[nextY - unit.radius][nextX] !== unit.id) ||
+      matrix[nextY - unit.radius][nextX] !== unit.id &&
+      matrix[nextY - unit.radius][nextX] !== targetID) ||
     (nextX + unit.radius < XLength &&
       matrix[nextY][nextX + unit.radius] !== 0 &&
-      matrix[nextY][nextX + unit.radius] !== unit.id) ||
+      matrix[nextY][nextX + unit.radius] !== unit.id &&
+      matrix[nextY][nextX + unit.radius] !== targetID) ||
     (nextX - unit.radius >= 0 &&
       matrix[nextY][nextX - unit.radius] !== 0 &&
-      matrix[nextY][nextX - unit.radius] !== unit.id) ||
+      matrix[nextY][nextX - unit.radius] !== unit.id &&
+      matrix[nextY][nextX - unit.radius] !== targetID) ||
     (nextY + unit.radius < YLength &&
       nextX + unit.radius < XLength &&
       matrix[nextY + unit.radius][nextX + unit.radius] !== 0 &&
-      matrix[nextY + unit.radius][nextX + unit.radius] !== unit.id) ||
+      matrix[nextY + unit.radius][nextX + unit.radius] !== unit.id &&
+      matrix[nextY + unit.radius][nextX + unit.radius] !== targetID) ||
     (nextY + unit.radius < YLength &&
       nextX - unit.radius >= 0 &&
       matrix[nextY + unit.radius][nextX - unit.radius] !== 0 &&
-      matrix[nextY + unit.radius][nextX - unit.radius] !== unit.id) ||
+      matrix[nextY + unit.radius][nextX - unit.radius] !== unit.id &&
+      matrix[nextY + unit.radius][nextX - unit.radius] !== targetID) ||
     (nextY - unit.radius >= 0 &&
       nextX + unit.radius < XLength &&
       matrix[nextY - unit.radius][nextX + unit.radius] !== 0 &&
-      matrix[nextY - unit.radius][nextX + unit.radius] !== unit.id) ||
+      matrix[nextY - unit.radius][nextX + unit.radius] !== unit.id &&
+      matrix[nextY - unit.radius][nextX + unit.radius] !== targetID) ||
     (nextY - unit.radius >= 0 &&
       nextX - unit.radius >= 0 &&
       matrix[nextY - unit.radius][nextX - unit.radius] !== 0 &&
-      matrix[nextY - unit.radius][nextX - unit.radius] !== unit.id)
+      matrix[nextY - unit.radius][nextX - unit.radius] !== unit.id &&
+      matrix[nextY - unit.radius][nextX - unit.radius] !== targetID)
   )
     return true;
 

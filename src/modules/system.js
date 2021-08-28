@@ -1,4 +1,3 @@
-import { Unit } from './Unit.js';
 import { Building } from './Building.js';
 import { Resource } from './Resource.js';
 
@@ -209,9 +208,7 @@ export const System = {
   },
 
   commandUnitToMove(unit, targetX, targetY) {
-    if (unit.subtype === 'workman') {
-      unit.setTargetForMoveToWorkman(targetX, targetY);
-    }
+    unit.setTargetForMove(targetX, targetY);
   },
 
   commandUnitToMine(unit, targetX, targetY) {

@@ -18,8 +18,16 @@ export const Unit = {
   },
 
   updateStatus: function (diff) {
-    if (this.isMoving && this.paths.length) {
+    if (this.paths.length && !this.isMining) {
       this.move(diff);
+
+      return;
+    }
+
+    if (this.paths.length && this.isMining) {
+      this.mine(diff);
+
+      return;
     }
   },
 
@@ -38,6 +46,14 @@ export const Unit = {
     return this.isSelected;
   },
 
+  setPathIndex: function (pathIndex) {
+    this.pathIndex = pathIndex;
+  },
+
+  setPaths: function (paths) {
+    this.paths = paths;
+  },
+
   setIsSelected: function (isSelected) {
     this.isSelected = isSelected;
   },
@@ -48,6 +64,14 @@ export const Unit = {
     this.startY = this.positionY;
     this.targetX = targetX;
     this.targetY = targetY;
+
+    this.pathIndex = 0;
+    this.paths = this.searchPathsForMoving(
+      this.startX,
+      this.startY,
+      this.targetX,
+      this.targetY
+    );
   },
 
   // 목표 지점에 도달하기 위한 최단거리 경로를 구하는 메소드
@@ -63,14 +87,16 @@ export const Unit = {
   },
 
   move: function (diff) {
+    let prevPathIndex = this.pathIndex;
+
     // paths 배열 내에서 index가 바뀌게끔 컨트롤
-    if (this.pathIndex >= 0 && this.pathIndex <= this.paths.length - 1) {
-      const distance = Math.floor(1 * this.speed * diff);
-      this.pathIndex =
-        this.pathIndex + distance < this.paths.length - 1
-          ? this.pathIndex + distance
-          : this.paths.length - 1;
-    }
+    if (!(this.pathIndex >= 0 && this.pathIndex <= this.paths.length - 1))
+      return;
+    const distance = Math.floor(1 * this.speed * diff);
+    this.pathIndex =
+      this.pathIndex + distance < this.paths.length - 1
+        ? this.pathIndex + distance
+        : this.paths.length - 1;
 
     const newPositionXWithMove = this.paths[this.pathIndex][0];
     const newPositionYWithMove = this.paths[this.pathIndex][1];
@@ -83,7 +109,7 @@ export const Unit = {
       return;
 
     // 이동할 위치에 다른 오브젝트가 이미 존재하는 지 확인
-    const objectInPosition = this.getObjectInPosition(
+    const objectInPosition = this.checkObjectInPosition(
       newPositionXWithMove,
       newPositionYWithMove,
       this.radius,
@@ -92,13 +118,10 @@ export const Unit = {
 
     // 존재한다면
     if (objectInPosition) {
-      // 충돌이 일어난 것이므로 경로를 재탐색 함
-      this.searchPathsForMoving(
-        this.positionX,
-        this.positionY,
-        this.targetX,
-        this.targetY
-      );
+      // 이전 인덱스로 돌아가서 기다린다.
+      this.pathIndex = prevPathIndex;
+
+      return;
     }
 
     // 위치 갱신
@@ -114,10 +137,8 @@ export const Unit = {
     this.positionY = newPositionYWithMove;
 
     if (this.pathIndex === this.paths.length - 1) {
-      console.log('call');
       this.paths = []; // 경로 초기화
       this.pathIndex = 0; // 경로 인덱스 초기화
-      this.isMoving = false; // moving 상태 해제
     }
   },
 
@@ -130,7 +151,7 @@ export const Unit = {
   },
 
   // 해당 위치에
-  getObjectInPosition: function (positionX, positionY, radius, id) {
+  checkObjectInPosition: function (positionX, positionY, radius, id) {
     const matrix = this.gameSystem.getMatrix();
 
     for (let y = positionY - radius; y < positionY + radius; y++) {
@@ -142,41 +163,5 @@ export const Unit = {
     }
 
     return false;
-  },
-
-  getNewPositionXWithMove: function (calculatedDistanceX) {
-    const newPositionXWithMove = this.positionX + calculatedDistanceX;
-
-    if (
-      (calculatedDistanceX > 0 && newPositionXWithMove >= this.targetX) ||
-      (calculatedDistanceX < 0 && newPositionXWithMove <= this.targetX)
-    ) {
-      return this.targetX;
-    } else return newPositionXWithMove;
-  },
-
-  getNewPositionYWithMove: function (calculatedDistanceY) {
-    const newPositionYWithMove = this.positionY + calculatedDistanceY;
-
-    if (
-      (calculatedDistanceY > 0 && newPositionYWithMove >= this.targetY) ||
-      (calculatedDistanceY < 0 && newPositionYWithMove <= this.targetY)
-    ) {
-      return this.targetY;
-    } else return newPositionYWithMove;
-  },
-
-  getAngleBetweenTarget: function () {
-    return Math.atan2(
-      this.targetY - this.positionY,
-      this.targetX - this.positionX
-    );
-  },
-
-  getDistanceBetweenTarget: function () {
-    return Math.sqrt(
-      Math.pow(this.positionX - this.targetX, 2) +
-        Math.pow(this.positionY - this.targetY, 2)
-    );
   },
 };
