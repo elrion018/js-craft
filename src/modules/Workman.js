@@ -1,4 +1,5 @@
 import { Unit } from './Unit.js';
+import { aStar } from '../utils/aStar.js';
 
 export const Workman = {
   workmanInit: function (positionX, positionY, id, gameSystem) {
@@ -9,6 +10,7 @@ export const Workman = {
     this.speed = 250;
     this.targetResource = {};
     this.targetHeadquarters = {};
+    this.isIncoming = true;
 
     this.setUnitInMatrix(positionX, positionY, this.radius, this.id);
   },
@@ -33,16 +35,38 @@ export const Workman = {
   },
 
   mine: function (diff) {
+    // 일꾼이 왕복하여 일할 수 있도록하는 로직
+    if (
+      !this.isIncoming &&
+      this.pathIndex === 0 &&
+      Object.keys(this.targetHeadquarters).length &&
+      Object.keys(this.targetResource).length
+    ) {
+      this.isIncoming = true;
+    }
+
     let prevPathIndex = this.pathIndex;
 
     // paths 배열 내에서 index가 바뀌게끔 컨트롤
     if (!(this.pathIndex >= 0 && this.pathIndex <= this.paths.length - 1))
       return;
+
     const distance = Math.floor(1 * this.speed * diff);
-    this.pathIndex =
-      this.pathIndex + distance < this.paths.length - 1
-        ? this.pathIndex + distance
-        : this.paths.length - 1;
+
+    if (
+      !Object.keys(this.targetHeadquarters).length ||
+      (Object.keys(this.targetHeadquarters).length && this.isIncoming)
+    ) {
+      this.pathIndex =
+        this.pathIndex + distance < this.paths.length - 1
+          ? this.pathIndex + distance
+          : this.paths.length - 1;
+    }
+
+    if (Object.keys(this.targetHeadquarters).length && !this.isIncoming) {
+      this.pathIndex =
+        this.pathIndex - distance >= 0 ? this.pathIndex - distance : 0;
+    }
 
     const newPositionXWithMove = this.paths[this.pathIndex][0];
     const newPositionYWithMove = this.paths[this.pathIndex][1];
@@ -62,14 +86,27 @@ export const Workman = {
       this.id
     );
 
+    // 오브젝트가 target headquarter라면
+    if (
+      Object.keys(this.targetHeadquarters).length &&
+      objectInPosition === this.targetHeadquarters.id
+    ) {
+      this.isIncoming = false;
+
+      return;
+    }
+
     // 오브젝트가 target resource라면
     if (
       Object.keys(this.targetResource).length &&
       objectInPosition === this.targetResource.id
     ) {
-      console.log('call');
-      // this.pathIndex = 0
-      // return
+      if (!Object.keys(this.targetHeadquarters).length) {
+        this.paths = this.searchPathsForMining(this.positionX, this.positionY);
+        this.pathIndex = 0;
+
+        return;
+      }
     }
 
     if (objectInPosition) {
@@ -92,6 +129,7 @@ export const Workman = {
     }
   },
 
+  // 자기자신을 제외한 오브젝트의 ID 값을 가져오는 메소드
   checkObjectInPosition: function (positionX, positionY) {
     const matrix = this.gameSystem.getMatrix();
 
@@ -106,13 +144,33 @@ export const Workman = {
     return null;
   },
 
-  searchPathsForMining: function (startX, startY, targetX, targetY) {
+  // 자원 채굴을 위한 가장 가까운 본부와의 경로를 탐색하는 메소드
+  searchPathsForMining: function (startX, startY) {
+    const buildings = this.gameSystem.getBuildings();
+
+    let nearestHeadquarter;
+    let nearestDistance = Number.MAX_SAFE_INTEGER;
+
+    // 나중에 headqauter만들어서 대체
+    buildings.forEach(building => {
+      let distance = Math.sqrt(
+        Math.pow(building.positionX - startX, 2) +
+          Math.pow(building.positionY - startY, 2)
+      );
+
+      if (nearestDistance > distance) {
+        nearestHeadquarter = building;
+      }
+    });
+
+    if (nearestHeadquarter) this.targetHeadquarters = nearestHeadquarter;
+
     return aStar({
       matrix: this.gameSystem.getMatrix(),
       startX,
       startY,
-      targetX,
-      targetY,
+      targetX: nearestHeadquarter.positionX,
+      targetY: nearestHeadquarter.positionY,
       unit: this,
     });
   },

@@ -60,7 +60,9 @@ export const aStar = function ({
       return getPaths(visited, [[nowX, nowY]], nowX, nowY);
     }
 
-    let euclideanDistance = Math.abs(targetX - nowX) + Math.abs(targetY - nowY);
+    let euclideanDistance = Math.sqrt(
+      Math.pow(targetX - nowX, 2) + Math.pow(targetY - nowY, 2)
+    );
 
     for (let i = 0; i < adjList[nowNode].length; i++) {
       let nextNode = adjList[nowNode][i][1];
@@ -206,31 +208,40 @@ const checkExistingObject = function ({
 };
 
 const adjustTarget = function ({ targetX, targetY, matrix, unit }) {
+  const YLength = matrix.length;
+  const XLength = matrix[0].length;
+
   if (
+    targetY + unit.radius < YLength &&
     matrix[targetY + unit.radius][targetX] !== 0 &&
     matrix[targetY + unit.radius][targetX] !== unit.id
   )
     targetY -= unit.radius;
 
   if (
+    targetY - unit.radius >= 0 &&
     matrix[targetY - unit.radius][targetX] !== 0 &&
     matrix[targetY - unit.radius][targetX] !== unit.id
   )
     targetY += unit.radius;
 
   if (
+    targetX + unit.radius < XLength &&
     matrix[targetY][targetX + unit.radius] !== 0 &&
     matrix[targetY][targetX + unit.radius] !== unit.id
   )
     targetX -= unit.radius;
 
   if (
+    targetX - unit.radius >= 0 &&
     matrix[targetY][targetX - unit.radius] !== 0 &&
     matrix[targetY][targetX - unit.radius] !== unit.id
   )
     targetX += unit.radius;
 
   if (
+    targetY + unit.radius < YLength &&
+    targetX + unit.radius < XLength &&
     matrix[targetY + unit.radius][targetX + unit.radius] !== 0 &&
     matrix[targetY + unit.radius][targetX + unit.radius] !== unit.id
   ) {
@@ -239,6 +250,8 @@ const adjustTarget = function ({ targetX, targetY, matrix, unit }) {
   }
 
   if (
+    targetY + unit.radius < YLength &&
+    targetX - unit.radius >= 0 &&
     matrix[targetY + unit.radius][targetX - unit.radius] !== 0 &&
     matrix[targetY + unit.radius][targetX - unit.radius] !== unit.id
   ) {
@@ -247,6 +260,8 @@ const adjustTarget = function ({ targetX, targetY, matrix, unit }) {
   }
 
   if (
+    targetY - unit.radius >= 0 &&
+    targetX + unit.radius < XLength &&
     matrix[targetY - unit.radius][targetX + unit.radius] !== 0 &&
     matrix[targetY - unit.radius][targetX + unit.radius] !== unit.id
   ) {
@@ -255,6 +270,8 @@ const adjustTarget = function ({ targetX, targetY, matrix, unit }) {
   }
 
   if (
+    targetY - unit.radius >= 0 &&
+    targetX - unit.radius >= 0 &&
     matrix[targetY - unit.radius][targetX - unit.radius] !== 0 &&
     matrix[targetY - unit.radius][targetX - unit.radius] !== unit.id
   ) {
